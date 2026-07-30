@@ -15,10 +15,11 @@ This folder is a complete, self-contained project. It may temporarily sit
 inside the GreenTee repo, but nothing in here may reference anything outside
 this folder: no imports, no symlinks, no shared config, no workspace
 membership. The extraction test is the contract: moving this folder anywhere
-and running `npm install && npm run build` inside it must succeed unchanged.
+and running `pnpm install && pnpm build` inside it must succeed unchanged.
 
-- Package manager is **npm** with `package-lock.json`. Never pnpm or a
-  workspace file in here, even though the parent repo uses pnpm.
+- Package manager is **pnpm** with `pnpm-lock.yaml`, pinned via the
+  `packageManager` field (ruling of 2026-07-30; npm before that). Still no
+  workspace file in here: this stays a single standalone package.
 - Code shared with the GreenTee site (tokens, primitives, motion) exists here
   as intentional duplication. Never "fix" that by importing across the
   boundary; copy and adapt.
@@ -42,7 +43,7 @@ or menu data inline, and never see a CMS type.
 - **Typed config is the fallback, not dead code.** When
   `NEXT_PUBLIC_SANITY_PROJECT_ID` or `NEXT_PUBLIC_SANITY_DATASET` is unset,
   the accessor serves the typed config in `lib/content/` exactly as it did
-  before Sanity. The no-env build must stay green: `npm install && npm run
+  before Sanity. The no-env build must stay green: `pnpm install && pnpm
   build` with no `.env` succeeds, all routes prerender, and the site renders
   the config content. The extraction test doubles as this fallback test. At
   request time, a failed or empty Sanity fetch logs and falls back to typed
@@ -144,4 +145,4 @@ stand in for the main site's domain.
   component per file. Components past roughly 150 lines or three
   responsibilities get split. Search `components/` before creating anything.
 - Verify every UI task at 1440 and 390. No horizontal overflow at any width.
-- Commit gate: `npm run lint && npm run typecheck` must pass.
+- Commit gate: `pnpm lint && pnpm typecheck` must pass.
