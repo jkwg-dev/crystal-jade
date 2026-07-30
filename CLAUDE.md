@@ -3,8 +3,8 @@
 Standalone Next.js (App Router) + TypeScript strict + Tailwind v4 site for
 Crystal Jade Palace, the Cantonese fine dining restaurant at GreenTee Richmond
 Center. Split out of the GreenTee site to live on its own domain, its own
-Vercel project, and eventually its own Sanity project. English only; the
-EN / 中文 indicator stays inert until human translation lands.
+Vercel project, and its own Sanity project (never the GreenTee one). English
+only; the EN / 中文 indicator stays inert until human translation lands.
 
 Routes: `/` (landing), `/story`, `/chef`, `/menu`, `/banquet`, `/reserve`.
 These map one-to-one to the former GreenTee `/dining` and `/dining/*` pages.
@@ -31,11 +31,34 @@ All content flows through typed getters in `lib/content.ts` (backed by local
 typed config for now). Components never hold copy, nav items, hours, prices,
 or menu data inline, and never see a CMS type.
 
-- **Sanity later**: a separate Sanity project (never the GreenTee one) will
-  back `lib/content.ts` eventually. `NEXT_PUBLIC_SANITY_PROJECT_ID` and
-  `NEXT_PUBLIC_SANITY_DATASET` are documented in `.env.example` and unused
-  until then. When Sanity lands, only `lib/content.ts` changes; getter
-  signatures hold, and no Sanity client or CMS type appears outside it.
+- **Two Sanity zones, no more.** Exactly two areas of this repo may import
+  from Sanity packages. One: `lib/content.ts`, the only module that fetches
+  content; the Sanity client, GROQ queries, and CMS-to-domain mapping live
+  here and nowhere else, behind the unchanged async getter signatures. Two:
+  the Studio zone (`sanity.config.ts`, `sanity/schemas/**`, and the
+  `/studio` route), which is authoring infrastructure, not site code. No
+  component, page, or lib outside these two zones imports anything from a
+  Sanity package, and nothing outside `lib/content.ts` fetches content.
+- **Typed config is the fallback, not dead code.** When
+  `NEXT_PUBLIC_SANITY_PROJECT_ID` or `NEXT_PUBLIC_SANITY_DATASET` is unset,
+  the accessor serves the typed config in `lib/content/` exactly as it did
+  before Sanity. The no-env build must stay green: `npm install && npm run
+  build` with no `.env` succeeds, all routes prerender, and the site renders
+  the config content. The extraction test doubles as this fallback test. At
+  request time, a failed or empty Sanity fetch logs and falls back to typed
+  config rather than rendering a broken page.
+- **Public read, no tokens in the app.** The dataset is public read
+  (marketing content only). The app fetches without a token; no Sanity
+  secret ever reaches client code, and no env vars beyond the two public
+  identifiers are consumed by the app or the deploy. The seed script's write
+  token is script-only and local-only. Studio authentication is Sanity's own
+  login.
+- **Published content only, time-based revalidation.** No draft mode, no
+  live preview. Content routes revalidate on a timer (`revalidate = 60`);
+  the on-demand revalidation webhook is a recorded follow-up, not built.
+- **`/studio` stays out of the site experience.** Route-level robots
+  noindex, no link to it anywhere in the site chrome, and any future sitemap
+  excludes it.
 - **One image serves both ratios.** Photo slots render breakpoint-aware
   aspect ratios (shorter at mobile widths), and there is no mandatory
   separate mobile image per slot: the Sanity project will rely on hotspot
@@ -49,7 +72,7 @@ or menu data inline, and never see a CMS type.
   server-only CMS client inside the accessor can never break the client
   boundary.
 - No database. No secrets in client bundles. No env vars beyond the two
-  documented placeholders without a ruling.
+  public Sanity identifiers and the script-only seed token without a ruling.
 
 ## Reservations: OpenTable later
 

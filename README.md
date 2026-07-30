@@ -23,10 +23,12 @@ npm run format       # prettier --write .
 
 ## Environment
 
-None required today. `.env.example` documents the two Sanity placeholders
-(`NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`); they stay
-unused until the separate Crystal Jade Sanity project is wired into
-`lib/content.ts`.
+None required. `NEXT_PUBLIC_SANITY_PROJECT_ID` and
+`NEXT_PUBLIC_SANITY_DATASET` (see `.env.example`) point the site at the
+separate Crystal Jade Sanity project and enable the embedded Studio at
+`/studio`; real values live in `.env.local`, never committed. With the vars
+unset, content comes from the typed config in `lib/content/` and the build
+stays green; that is the standing extraction test.
 
 ## Architecture notes
 
