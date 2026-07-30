@@ -36,8 +36,9 @@ or menu data inline, and never see a CMS type.
   from Sanity packages. One: `lib/content.ts`, the only module that fetches
   content; the Sanity client, GROQ queries, and CMS-to-domain mapping live
   here and nowhere else, behind the unchanged async getter signatures. Two:
-  the Studio zone (`sanity.config.ts`, `sanity/schemas/**`, and the
-  `/studio` route), which is authoring infrastructure, not site code. No
+  the Studio zone (`sanity.config.ts`, `sanity/schemas/**`, the `/studio`
+  route, and the local-only seed script `scripts/seed.ts`), which is
+  authoring infrastructure, not site code. No
   component, page, or lib outside these two zones imports anything from a
   Sanity package, and nothing outside `lib/content.ts` fetches content.
 - **Typed config is the fallback, not dead code.** When

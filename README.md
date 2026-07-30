@@ -18,6 +18,8 @@ pnpm build           # production build
 pnpm lint            # eslint
 pnpm typecheck       # tsc --noEmit
 pnpm format          # prettier --write .
+pnpm seed            # project lib/content/ into the Sanity dataset
+                     # (local only; needs SANITY_SEED_TOKEN, see .env.example)
 ```
 
 ## Environment
