@@ -44,7 +44,15 @@ export default defineConfig({
                   .documentId("restaurant"),
               ),
             S.divider(),
-            S.documentTypeListItem("dish").title("Dishes"),
+            S.listItem()
+              .title("Dishes")
+              .id("dishes")
+              .schemaType("dish")
+              .child(
+                S.documentTypeList("dish")
+                  .title("Dishes")
+                  .defaultOrdering([{ field: "order", direction: "asc" }]),
+              ),
           ]),
     }),
   ],
