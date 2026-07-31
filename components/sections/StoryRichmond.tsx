@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
+import { SiteImage } from "@/components/ui/SiteImage";
 import type { RestaurantStory } from "@/types";
 import { DiningHead } from "./DiningHead";
 
@@ -14,14 +15,33 @@ export function StoryRichmond({ story }: { story: RestaurantStory }) {
         <Reveal as="div">
           <PhotoFrame
             tint="champagne"
-            showMark
-            label={{
-              kicker: "Image placeholder",
-              name: "Richmond · The Vancouver Chapter",
-            }}
-            tag="Replace with final photography"
+            showMark={!story.richmond.image}
+            label={
+              story.richmond.image
+                ? undefined
+                : {
+                    kicker: "Image placeholder",
+                    name: "Richmond · The Vancouver Chapter",
+                  }
+            }
+            tag={
+              story.richmond.image
+                ? undefined
+                : "Replace with final photography"
+            }
             className="aspect-[4/5] max-h-[560px] max-[900px]:aspect-square max-[900px]:max-h-[440px]"
-          />
+          >
+            {story.richmond.image && (
+              <SiteImage
+                image={story.richmond.image}
+                alt=""
+                fill
+                sizes="(max-width: 900px) 100vw, 45vw"
+                lqip={story.richmond.image.lqip}
+                className="z-[1] object-cover"
+              />
+            )}
+          </PhotoFrame>
         </Reveal>
         <div>
           <DiningHead

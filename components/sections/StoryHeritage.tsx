@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
+import { SiteImage } from "@/components/ui/SiteImage";
 import type { RestaurantStory } from "@/types";
 import { DiningHead } from "./DiningHead";
 
@@ -46,11 +47,30 @@ export function StoryHeritage({ story }: { story: RestaurantStory }) {
         <Reveal as="div" delay={200}>
           <PhotoFrame
             tint="jade"
-            showMark
-            label={{ kicker: "Map placeholder", name: "Global Footprint" }}
-            tag="Confirm footprint list with Crystal Jade brand guide"
+            showMark={!story.heritage.image}
+            label={
+              story.heritage.image
+                ? undefined
+                : { kicker: "Map placeholder", name: "Global Footprint" }
+            }
+            tag={
+              story.heritage.image
+                ? undefined
+                : "Confirm footprint list with Crystal Jade brand guide"
+            }
             className="aspect-[16/11]"
-          />
+          >
+            {story.heritage.image && (
+              <SiteImage
+                image={story.heritage.image}
+                alt=""
+                fill
+                sizes="(max-width: 900px) 100vw, 45vw"
+                lqip={story.heritage.image.lqip}
+                className="z-[1] object-cover"
+              />
+            )}
+          </PhotoFrame>
         </Reveal>
       </div>
     </section>

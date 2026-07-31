@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
+import { SiteImage } from "@/components/ui/SiteImage";
 import { DINING_SLOT_TINTS } from "@/lib/tints";
 import type { PhilosophyCard } from "@/types";
 import { DiningHead } from "./DiningHead";
@@ -20,9 +21,24 @@ export function KitchenPhilosophy({ cards }: { cards: PhilosophyCard[] }) {
           <Reveal as="article" key={card.title} delay={index * 120}>
             <PhotoFrame
               tint={DINING_SLOT_TINTS[index % DINING_SLOT_TINTS.length]}
-              label={{ kicker: "Concept image", name: card.title }}
+              label={
+                card.image
+                  ? undefined
+                  : { kicker: "Concept image", name: card.title }
+              }
               className="mb-5 aspect-[16/11]"
-            />
+            >
+              {card.image && (
+                <SiteImage
+                  image={card.image}
+                  alt=""
+                  fill
+                  sizes="(max-width: 900px) 100vw, 33vw"
+                  lqip={card.image.lqip}
+                  className="z-[1] object-cover"
+                />
+              )}
+            </PhotoFrame>
             <h3 className="mb-2 font-serif text-[21px] font-medium">
               {card.title}
             </h3>

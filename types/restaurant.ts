@@ -30,13 +30,13 @@ export type PhilosophyCard = {
 
 export type RestaurantStory = {
   /** Heritage narrative: serif lead plus body paragraphs. */
-  heritage: { lead: string; body: string[] };
+  heritage: { lead: string; body: string[]; image?: InterimImage };
   /** Global footprint, pending brand-guide confirmation. */
   footprint: string[];
   /** The highlighted closing stop, "Now, Richmond". */
   footprintNow: string;
   /** Why Richmond, Why Now narrative. */
-  richmond: { lead: string; body: string[] };
+  richmond: { lead: string; body: string[]; image?: InterimImage };
   philosophy: PhilosophyCard[];
 };
 
@@ -77,6 +77,10 @@ export type RestaurantBanquet = {
   menus: BanquetMenu[];
   /** Enquire Now target; the reserve page until a dedicated flow exists. */
   enquiryTarget: string;
+  /** Banquet table photograph beside the services narrative. */
+  tableImage?: InterimImage;
+  /** Composed course photograph in the Bespoke Menus panel. */
+  courseImage?: InterimImage;
 };
 
 export type RestaurantReserve = {
@@ -106,8 +110,14 @@ export type Restaurant = {
   lede: string;
   intro: { lede: string; support: string };
   heroMedia?: InterimImage;
+  /** Page header band images for the story, menu, and banquet routes. */
+  bands?: {
+    story?: InterimImage;
+    menu?: InterimImage;
+    banquet?: InterimImage;
+  };
   credentials: CredentialRow[];
-  privateDining: { copy: string; facts: RestaurantFact[] };
+  privateDining: { copy: string; facts: RestaurantFact[]; image?: InterimImage };
   story: RestaurantStory;
   chef: RestaurantChef;
   banquet: RestaurantBanquet;

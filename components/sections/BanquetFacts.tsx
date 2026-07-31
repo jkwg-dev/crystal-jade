@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { FactRows } from "@/components/ui/FactRows";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
+import { SiteImage } from "@/components/ui/SiteImage";
 import type { RestaurantBanquet } from "@/types";
 import { DiningHead } from "./DiningHead";
 
@@ -40,11 +41,28 @@ export function BanquetFacts({ banquet }: { banquet: RestaurantBanquet }) {
         <Reveal as="div" delay={200}>
           <PhotoFrame
             tint="champagne"
-            showMark
-            label={{ kicker: "Food image", name: "Banquet Table" }}
-            tag="Replace with final photography"
+            showMark={!banquet.tableImage}
+            label={
+              banquet.tableImage
+                ? undefined
+                : { kicker: "Food image", name: "Banquet Table" }
+            }
+            tag={
+              banquet.tableImage ? undefined : "Replace with final photography"
+            }
             className="aspect-[4/5] max-h-[560px] max-[900px]:aspect-square max-[900px]:max-h-[440px]"
-          />
+          >
+            {banquet.tableImage && (
+              <SiteImage
+                image={banquet.tableImage}
+                alt=""
+                fill
+                sizes="(max-width: 900px) 100vw, 45vw"
+                lqip={banquet.tableImage.lqip}
+                className="z-[1] object-cover"
+              />
+            )}
+          </PhotoFrame>
         </Reveal>
       </div>
     </section>

@@ -2,6 +2,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { ReservationCta } from "@/components/ui/ReservationCta";
+import { SiteImage } from "@/components/ui/SiteImage";
 import type { ReservationTarget } from "@/lib/reservations";
 import { DINING_SLOT_TINTS } from "@/lib/tints";
 import type { Dish } from "@/types";
@@ -31,9 +32,22 @@ export function SignatureTrio({
           <Reveal as="figure" key={dish.id} delay={index * 120}>
             <PhotoFrame
               tint={DINING_SLOT_TINTS[index % DINING_SLOT_TINTS.length]}
-              label={{ kicker: "Photo", name: dish.name }}
+              label={
+                dish.image ? undefined : { kicker: "Photo", name: dish.name }
+              }
               className="aspect-[4/5] max-[760px]:aspect-[4/3]"
-            />
+            >
+              {dish.image && (
+                <SiteImage
+                  image={dish.image}
+                  alt=""
+                  fill
+                  sizes="(max-width: 760px) 88vw, 30vw"
+                  lqip={dish.image.lqip}
+                  className="z-[1] object-cover"
+                />
+              )}
+            </PhotoFrame>
             <figcaption className="mt-[18px] text-center font-serif text-[20px] font-medium tracking-[0.02em]">
               {dish.name}
             </figcaption>

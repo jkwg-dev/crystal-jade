@@ -28,6 +28,7 @@ export default async function BanquetPage() {
           name: "Banquet Hall · Private Dining Room",
           tag: "Replace with final photography",
         }}
+        media={restaurant.bands?.banquet}
       />
       <BanquetFacts banquet={restaurant.banquet} />
       <BespokeMenus banquet={restaurant.banquet} />

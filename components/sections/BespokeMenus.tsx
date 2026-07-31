@@ -2,6 +2,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
 import { FactRows } from "@/components/ui/FactRows";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
+import { SiteImage } from "@/components/ui/SiteImage";
 import type { RestaurantBanquet } from "@/types";
 import { DiningHead } from "./DiningHead";
 
@@ -23,11 +24,28 @@ export function BespokeMenus({ banquet }: { banquet: RestaurantBanquet }) {
         <Reveal as="div">
           <PhotoFrame
             tint="jade"
-            showMark
-            label={{ kicker: "Image placeholder", name: "Composed Course" }}
-            tag="Replace with final photography"
+            showMark={!banquet.courseImage}
+            label={
+              banquet.courseImage
+                ? undefined
+                : { kicker: "Image placeholder", name: "Composed Course" }
+            }
+            tag={
+              banquet.courseImage ? undefined : "Replace with final photography"
+            }
             className="aspect-[4/3]"
-          />
+          >
+            {banquet.courseImage && (
+              <SiteImage
+                image={banquet.courseImage}
+                alt=""
+                fill
+                sizes="(max-width: 900px) 100vw, 45vw"
+                lqip={banquet.courseImage.lqip}
+                className="z-[1] object-cover"
+              />
+            )}
+          </PhotoFrame>
         </Reveal>
         <div>
           <DiningHead

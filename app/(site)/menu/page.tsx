@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/Reveal";
 import { DiningBand } from "@/components/sections/DiningBand";
 import { DishGrid } from "@/components/sections/DishGrid";
-import { getDishes } from "@/lib/content";
+import { getDishes, getRestaurant } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Menu",
@@ -14,7 +14,10 @@ export const metadata: Metadata = {
  * `/menu` (menu mockup v6): hero band over the category-filtered dish grid.
  */
 export default async function MenuPage() {
-  const dishes = await getDishes();
+  const [dishes, restaurant] = await Promise.all([
+    getDishes(),
+    getRestaurant(),
+  ]);
   return (
     <>
       <DiningBand
@@ -27,6 +30,7 @@ export default async function MenuPage() {
           name: "Signature Dish · Editorial Photography",
           tag: "Replace with final dish photography",
         }}
+        media={restaurant.bands?.menu}
       />
       <section className="dine-sec">
         <DishGrid dishes={dishes} />

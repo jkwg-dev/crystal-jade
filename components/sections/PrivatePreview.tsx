@@ -2,6 +2,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
 import { FactRows } from "@/components/ui/FactRows";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
+import { SiteImage } from "@/components/ui/SiteImage";
 import type { Restaurant } from "@/types";
 import { DiningHead } from "./DiningHead";
 
@@ -21,11 +22,28 @@ export function PrivatePreview({
         <Reveal as="div">
           <PhotoFrame
             tint="emerald"
-            showMark
-            label={{ kicker: "Image placeholder", name: "Private Dining Room" }}
-            tag="Replace with final photography"
+            showMark={!privateDining.image}
+            label={
+              privateDining.image
+                ? undefined
+                : { kicker: "Image placeholder", name: "Private Dining Room" }
+            }
+            tag={
+              privateDining.image ? undefined : "Replace with final photography"
+            }
             className="aspect-[4/3]"
-          />
+          >
+            {privateDining.image && (
+              <SiteImage
+                image={privateDining.image}
+                alt=""
+                fill
+                sizes="(max-width: 900px) 100vw, 45vw"
+                lqip={privateDining.image.lqip}
+                className="z-[1] object-cover"
+              />
+            )}
+          </PhotoFrame>
         </Reveal>
 
         <div>

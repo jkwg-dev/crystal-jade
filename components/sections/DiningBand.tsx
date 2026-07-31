@@ -2,7 +2,8 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { RichHeading } from "@/components/ui/RichHeading";
-import type { PhotoTint } from "@/types";
+import { SiteImage } from "@/components/ui/SiteImage";
+import type { InterimImage, PhotoTint } from "@/types";
 
 export type DiningBandProps = {
   eyebrow: string;
@@ -11,6 +12,8 @@ export type DiningBandProps = {
   /** Optional serif italic support line (mockup `.band-line`). */
   line?: string;
   frame: { tint: PhotoTint; kicker: string; name: string; tag?: string };
+  /** Band photograph; the designed pending frame renders while absent. */
+  media?: InterimImage;
 };
 
 /**
@@ -18,16 +21,33 @@ export type DiningBandProps = {
  * 46svh pending frame with the gold inset frame, eyebrow, and serif H1. The
  * brand mark lives in the site header at every width.
  */
-export function DiningBand({ eyebrow, title, line, frame }: DiningBandProps) {
+export function DiningBand({
+  eyebrow,
+  title,
+  line,
+  frame,
+  media,
+}: DiningBandProps) {
   return (
     <section className="relative h-[min(46svh,430px)] min-h-[320px]">
       <PhotoFrame
         tint={frame.tint}
-        showMark
-        label={{ kicker: frame.kicker, name: frame.name }}
-        tag={frame.tag}
+        showMark={!media}
+        label={media ? undefined : { kicker: frame.kicker, name: frame.name }}
+        tag={media ? undefined : frame.tag}
         className="pf-quiet absolute inset-0"
-      />
+      >
+        {media && (
+          <SiteImage
+            image={media}
+            alt=""
+            fill
+            sizes="100vw"
+            lqip={media.lqip}
+            className="z-[1] object-cover"
+          />
+        )}
+      </PhotoFrame>
       <div
         className="border-champagne/[0.28] pointer-events-none absolute inset-4 z-[4] border"
         aria-hidden="true"

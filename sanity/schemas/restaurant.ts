@@ -53,6 +53,30 @@ export const restaurant = defineType({
         "Landing hero image. Leave empty until photography lands; the designed pending frame renders instead.",
     }),
     defineField({
+      name: "bands",
+      title: "Page bands",
+      type: "object",
+      description:
+        "Header band images for the story, menu, and banquet pages. Leave empty until photography lands; the designed pending frames render instead.",
+      fields: [
+        defineField({
+          name: "story",
+          title: "Story page band",
+          type: "siteImage",
+        }),
+        defineField({
+          name: "menu",
+          title: "Menu page band",
+          type: "siteImage",
+        }),
+        defineField({
+          name: "banquet",
+          title: "Banquet page band",
+          type: "siteImage",
+        }),
+      ],
+    }),
+    defineField({
       name: "credentials",
       title: "Credentials",
       type: "array",
@@ -70,6 +94,13 @@ export const restaurant = defineType({
           title: "Facts",
           type: "array",
           of: [defineArrayMember({ type: "factRow" })],
+        }),
+        defineField({
+          name: "image",
+          title: "Private dining room photograph",
+          type: "siteImage",
+          description:
+            "Room photograph in the landing Private Dining panel. Leave empty until photography lands; the pending frame renders instead.",
         }),
       ],
     }),
@@ -94,6 +125,13 @@ export const restaurant = defineType({
               title: "Body paragraphs",
               type: "array",
               of: [defineArrayMember({ type: "text", rows: 3 })],
+            }),
+            defineField({
+              name: "image",
+              title: "Heritage image",
+              type: "siteImage",
+              description:
+                "Map or brand imagery beside the heritage narrative. Leave empty until photography lands; the pending frame renders instead.",
             }),
           ],
         }),
@@ -126,6 +164,13 @@ export const restaurant = defineType({
               title: "Body paragraphs",
               type: "array",
               of: [defineArrayMember({ type: "text", rows: 3 })],
+            }),
+            defineField({
+              name: "image",
+              title: "Richmond image",
+              type: "siteImage",
+              description:
+                "Imagery beside the Why Richmond narrative. Leave empty until photography lands; the pending frame renders instead.",
             }),
           ],
         }),
@@ -286,6 +331,20 @@ export const restaurant = defineType({
           type: "string",
           description:
             "Enquire Now destination; the reserve page until a dedicated flow exists.",
+        }),
+        defineField({
+          name: "tableImage",
+          title: "Banquet table photograph",
+          type: "siteImage",
+          description:
+            "Table photograph beside the Banquet Services narrative. Leave empty until photography lands; the pending frame renders instead.",
+        }),
+        defineField({
+          name: "courseImage",
+          title: "Composed course photograph",
+          type: "siteImage",
+          description:
+            "Course photograph in the Bespoke Menus panel. Leave empty until photography lands; the pending frame renders instead.",
         }),
       ],
     }),

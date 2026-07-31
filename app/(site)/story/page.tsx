@@ -28,6 +28,7 @@ export default async function StoryPage() {
           name: "Crystal Jade Brand Imagery",
           tag: "Replace with brand photography per brand guide",
         }}
+        media={restaurant.bands?.story}
       />
       <StoryHeritage story={restaurant.story} />
       <StoryRichmond story={restaurant.story} />

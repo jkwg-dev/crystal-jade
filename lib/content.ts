@@ -65,7 +65,8 @@ const FETCH_OPTIONS = { next: { revalidate: 60 } };
 /**
  * Builder target widths per frame class, sized for the widest rendering of
  * each slot at retina density; `next/image` scales down from these via each
- * call site's `sizes`.
+ * call site's `sizes`. Dish photos take the portrait width because one
+ * upload serves both the 16:10 menu card and the taller landing trio crop.
  */
 const IMAGE_WIDTH = {
   hero: 2000,
@@ -102,13 +103,18 @@ const RESTAURANT_QUERY = groq`*[_id == "restaurant"][0]{
   lede,
   intro{ lede, support },
   heroMedia{ ${IMAGE_FIELDS} },
+  bands{
+    story{ ${IMAGE_FIELDS} },
+    menu{ ${IMAGE_FIELDS} },
+    banquet{ ${IMAGE_FIELDS} }
+  },
   credentials[]{ label, value, detail },
-  privateDining{ copy, facts[]{ label, value, detail } },
+  privateDining{ copy, facts[]{ label, value, detail }, image{ ${IMAGE_FIELDS} } },
   story{
-    heritage{ lead, body },
+    heritage{ lead, body, image{ ${IMAGE_FIELDS} } },
     footprint,
     footprintNow,
-    richmond{ lead, body },
+    richmond{ lead, body, image{ ${IMAGE_FIELDS} } },
     philosophy[]{ title, line, image{ ${IMAGE_FIELDS} } }
   },
   chef{
@@ -124,7 +130,9 @@ const RESTAURANT_QUERY = groq`*[_id == "restaurant"][0]{
     facts[]{ label, value, detail },
     occasions,
     menus[]{ label, line, detail },
-    enquiryTarget
+    enquiryTarget,
+    tableImage{ ${IMAGE_FIELDS} },
+    courseImage{ ${IMAGE_FIELDS} }
   },
   reserve{ openTableUrl, phone, wechat, hours, address{ name, line } },
   socials[]{ label, url }
@@ -164,7 +172,11 @@ type SanityDish = {
   frame?: { tint?: string | null } | null;
 };
 
-type SanityLeadBody = { lead?: string | null; body?: string[] | null };
+type SanityLeadBody = {
+  lead?: string | null;
+  body?: string[] | null;
+  image?: SanityImage | null;
+};
 
 type SanityRestaurant = {
   name?: string | null;
@@ -172,10 +184,16 @@ type SanityRestaurant = {
   lede?: string | null;
   intro?: { lede?: string | null; support?: string | null } | null;
   heroMedia?: SanityImage | null;
+  bands?: {
+    story?: SanityImage | null;
+    menu?: SanityImage | null;
+    banquet?: SanityImage | null;
+  } | null;
   credentials?: SanityFactRow[] | null;
   privateDining?: {
     copy?: string | null;
     facts?: SanityFactRow[] | null;
+    image?: SanityImage | null;
   } | null;
   story?: {
     heritage?: SanityLeadBody | null;
@@ -210,6 +228,8 @@ type SanityRestaurant = {
       detail?: string | null;
     }[] | null;
     enquiryTarget?: string | null;
+    tableImage?: SanityImage | null;
+    courseImage?: SanityImage | null;
   } | null;
   reserve?: {
     openTableUrl?: string | null;
@@ -303,18 +323,23 @@ function mapDish(raw: SanityDish): Dish {
     line: req(raw.line, `dish ${id} line`),
     category,
     order: req(raw.order, `dish ${id} order`),
-    image: mapImage(raw.image, IMAGE_WIDTH.card),
+    image: mapImage(raw.image, IMAGE_WIDTH.portrait),
     seasonal: raw.seasonal ?? undefined,
     available: raw.available ?? undefined,
     frame: { tint },
   };
 }
 
-function mapLeadBody(raw: SanityLeadBody | null | undefined, label: string) {
+function mapLeadBody(
+  raw: SanityLeadBody | null | undefined,
+  label: string,
+  imageWidth: number,
+) {
   const section = req(raw, label);
   return {
     lead: req(section.lead, `${label}.lead`),
     body: req(section.body, `${label}.body`),
+    image: mapImage(section.image, imageWidth),
   };
 }
 
@@ -335,16 +360,28 @@ function mapRestaurant(raw: SanityRestaurant): Restaurant {
       support: req(intro.support, "intro.support"),
     },
     heroMedia: mapImage(raw.heroMedia, IMAGE_WIDTH.hero),
+    bands: raw.bands
+      ? {
+          story: mapImage(raw.bands.story, IMAGE_WIDTH.hero),
+          menu: mapImage(raw.bands.menu, IMAGE_WIDTH.hero),
+          banquet: mapImage(raw.bands.banquet, IMAGE_WIDTH.hero),
+        }
+      : undefined,
     credentials: mapFactRows(raw.credentials, "credentials"),
     privateDining: {
       copy: req(privateDining.copy, "privateDining.copy"),
       facts: mapFactRows(privateDining.facts, "privateDining.facts"),
+      image: mapImage(privateDining.image, IMAGE_WIDTH.card),
     },
     story: {
-      heritage: mapLeadBody(story.heritage, "story.heritage"),
+      heritage: mapLeadBody(story.heritage, "story.heritage", IMAGE_WIDTH.card),
       footprint: req(story.footprint, "story.footprint"),
       footprintNow: req(story.footprintNow, "story.footprintNow"),
-      richmond: mapLeadBody(story.richmond, "story.richmond"),
+      richmond: mapLeadBody(
+        story.richmond,
+        "story.richmond",
+        IMAGE_WIDTH.portrait,
+      ),
       philosophy: req(story.philosophy, "story.philosophy").map(
         (card, index) => ({
           title: req(card.title, `philosophy[${index}].title`),
@@ -375,6 +412,8 @@ function mapRestaurant(raw: SanityRestaurant): Restaurant {
         detail: menu.detail ?? undefined,
       })),
       enquiryTarget: req(banquet.enquiryTarget, "banquet.enquiryTarget"),
+      tableImage: mapImage(banquet.tableImage, IMAGE_WIDTH.portrait),
+      courseImage: mapImage(banquet.courseImage, IMAGE_WIDTH.card),
     },
     reserve: {
       openTableUrl: reserve.openTableUrl ?? undefined,
