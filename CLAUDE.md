@@ -108,9 +108,12 @@ stand in for the main site's domain.
 - Buttons only via the copied `Button` variants (`solid` | `ghost` | `light`,
   plus `sm`). No new button styles, no gradient buttons, no card shadows, no
   white background sections.
-- Every image renders through the placeholder frame (`PhotoFrame`) until the
-  Sanity image pipeline is wired; never a bare `<img>`, never stock imagery
-  in a designed pending slot (chef portrait, dishes, private rooms).
+- Every image renders inside the placeholder frame (`PhotoFrame`): the
+  designed pending state while the slot's Sanity asset is absent, and
+  `SiteImage` (fed a mapped `InterimImage` whose URL the accessor builds
+  with crop and hotspot respected) inside the same frame once it exists.
+  Never a bare `<img>`, never stock imagery in a designed pending slot
+  (chef portrait, dishes, private rooms).
 - No literal florals, no regular repeating decorative patterns; grain only
   via the irregular fractal-noise overlay recipe.
 - Copy: English only. Never an em dash or an en dash anywhere; write ranges
