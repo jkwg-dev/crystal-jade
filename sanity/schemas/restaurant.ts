@@ -50,7 +50,7 @@ export const restaurant = defineType({
       title: "Hero media",
       type: "siteImage",
       description:
-        "Landing hero image. Leave empty until photography lands; the designed pending frame renders instead.",
+        "Landing hero image. Leave empty until photography lands; the designed pending frame renders instead. Upload JPG or WebP, at least 2400 by 1400 pixels, wide landscape. Compose with generous room around the subject: phones show a much taller, tighter crop around the focal point.",
     }),
     defineField({
       name: "bands",
@@ -63,16 +63,22 @@ export const restaurant = defineType({
           name: "story",
           title: "Story page band",
           type: "siteImage",
+          description:
+            "Upload JPG or WebP, at least 2400 by 900 pixels, very wide. Keep the subject near the focal point with room around it: phones crop this band to nearly a square.",
         }),
         defineField({
           name: "menu",
           title: "Menu page band",
           type: "siteImage",
+          description:
+            "Upload JPG or WebP, at least 2400 by 900 pixels, very wide. Keep the subject near the focal point with room around it: phones crop this band to nearly a square.",
         }),
         defineField({
           name: "banquet",
           title: "Banquet page band",
           type: "siteImage",
+          description:
+            "Upload JPG or WebP, at least 2400 by 900 pixels, very wide. Keep the subject near the focal point with room around it: phones crop this band to nearly a square.",
         }),
       ],
     }),
@@ -100,7 +106,7 @@ export const restaurant = defineType({
           title: "Private dining room photograph",
           type: "siteImage",
           description:
-            "Room photograph in the landing Private Dining panel. Leave empty until photography lands; the pending frame renders instead.",
+            "Room photograph in the landing Private Dining panel. Leave empty until photography lands; the pending frame renders instead. Upload JPG or WebP, at least 1200 by 900 pixels (4:3). The frame keeps this ratio at every width; a little margin around the subject keeps the focal crop clean.",
         }),
       ],
     }),
@@ -131,7 +137,7 @@ export const restaurant = defineType({
               title: "Heritage image",
               type: "siteImage",
               description:
-                "Map or brand imagery beside the heritage narrative. Leave empty until photography lands; the pending frame renders instead.",
+                "Map or brand imagery beside the heritage narrative. Leave empty until photography lands; the pending frame renders instead. Upload JPG or WebP, at least 1200 by 825 pixels (16:11). The frame keeps this ratio at every width.",
             }),
           ],
         }),
@@ -170,7 +176,7 @@ export const restaurant = defineType({
               title: "Richmond image",
               type: "siteImage",
               description:
-                "Imagery beside the Why Richmond narrative. Leave empty until photography lands; the pending frame renders instead.",
+                "Imagery beside the Why Richmond narrative. Leave empty until photography lands; the pending frame renders instead. Upload JPG or WebP, at least 1400 by 1750 pixels (4:5 portrait). Leave breathing room around the subject: below 900 pixels wide the frame crops to a square around the focal point.",
             }),
           ],
         }),
@@ -200,6 +206,8 @@ export const restaurant = defineType({
                   name: "image",
                   title: "Image",
                   type: "siteImage",
+                  description:
+                    "Concept image for this card. Upload JPG or WebP, at least 1200 by 825 pixels (16:11). The frame keeps this ratio at every width.",
                 }),
               ],
               preview: { select: { title: "title", subtitle: "line" } },
@@ -218,7 +226,7 @@ export const restaurant = defineType({
           title: "Portrait",
           type: "siteImage",
           description:
-            "Kitchen-setting portrait, explicitly not a studio headshot.",
+            "Kitchen-setting portrait, explicitly not a studio headshot. Upload JPG or WebP, at least 1400 by 1750 pixels (4:5 portrait). Leave breathing room around the chef: below 900 pixels wide the frame crops to a square around the focal point.",
         }),
         defineField({
           name: "intro",
@@ -337,14 +345,14 @@ export const restaurant = defineType({
           title: "Banquet table photograph",
           type: "siteImage",
           description:
-            "Table photograph beside the Banquet Services narrative. Leave empty until photography lands; the pending frame renders instead.",
+            "Table photograph beside the Banquet Services narrative. Leave empty until photography lands; the pending frame renders instead. Upload JPG or WebP, at least 1400 by 1750 pixels (4:5 portrait). Leave breathing room around the setting: below 900 pixels wide the frame crops to a square around the focal point.",
         }),
         defineField({
           name: "courseImage",
           title: "Composed course photograph",
           type: "siteImage",
           description:
-            "Course photograph in the Bespoke Menus panel. Leave empty until photography lands; the pending frame renders instead.",
+            "Course photograph in the Bespoke Menus panel. Leave empty until photography lands; the pending frame renders instead. Upload JPG or WebP, at least 1200 by 900 pixels (4:3). The frame keeps this ratio at every width; a little margin around the plate keeps the focal crop clean.",
         }),
       ],
     }),

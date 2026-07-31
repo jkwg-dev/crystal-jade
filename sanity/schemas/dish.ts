@@ -71,7 +71,7 @@ export const dish = defineType({
       title: "Photograph",
       type: "siteImage",
       description:
-        "Editorial dish photo. Leave empty until photography lands; the designed pending frame renders instead.",
+        "Editorial dish photo. Leave empty until photography lands; the designed pending frame renders instead. Upload JPG or WebP, at least 1400 by 875 pixels (16:10). The same photo also appears in the landing Signature trio at a taller 4:5 crop (4:3 on phones), so frame the dish with vertical headroom around the focal point.",
     }),
     defineField({
       name: "seasonal",
