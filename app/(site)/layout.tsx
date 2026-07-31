@@ -4,6 +4,13 @@ import { DiningInfoStrip } from "@/components/sections/DiningInfoStrip";
 import { getRestaurant, sitePages } from "@/lib/content";
 import { getReservationProvider } from "@/lib/reservations";
 
+/**
+ * Published content only, time-based ISR (ruling 5): every content route
+ * under the (site) group revalidates on this window. The Studio route sits
+ * outside the group and is untouched.
+ */
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: {
     default: "Crystal Jade Palace",
