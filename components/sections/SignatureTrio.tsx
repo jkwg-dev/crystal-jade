@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { ReservationCta } from "@/components/ui/ReservationCta";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { getStrings, localePath, type Locale } from "@/lib/i18n";
 import type { ReservationTarget } from "@/lib/reservations";
 import { DINING_SLOT_TINTS } from "@/lib/tints";
 import type { Dish } from "@/types";
@@ -13,17 +14,20 @@ import { DiningHead } from "./DiningHead";
  * dish frames and the Book a Table / View the Full Menu CTAs.
  */
 export function SignatureTrio({
+  locale,
   dishes,
   bookTarget,
 }: {
+  locale: Locale;
   dishes: Dish[];
   bookTarget: ReservationTarget;
 }) {
+  const strings = getStrings(locale);
   return (
     <section className="dine-sec">
       <DiningHead
-        eyebrow="Signature Dishes"
-        title="From the *kitchen*."
+        eyebrow={strings.home.trioEyebrow}
+        title={strings.home.trioTitle}
         className="mb-12"
       />
 
@@ -33,7 +37,9 @@ export function SignatureTrio({
             <PhotoFrame
               tint={DINING_SLOT_TINTS[index % DINING_SLOT_TINTS.length]}
               label={
-                dish.image ? undefined : { kicker: "Photo", name: dish.name }
+                dish.image
+                  ? undefined
+                  : { kicker: strings.home.trioPhotoKicker, name: dish.name }
               }
               className="aspect-[4/5] max-[760px]:aspect-[4/3]"
             >
@@ -56,9 +62,11 @@ export function SignatureTrio({
       </div>
 
       <Reveal as="div" className="mt-14 flex flex-wrap justify-center gap-3.5">
-        <ReservationCta target={bookTarget} />
-        <Button href="/menu" variant="ghost">
-          View the Full Menu
+        <ReservationCta target={bookTarget}>
+          {strings.chrome.bookATable}
+        </ReservationCta>
+        <Button href={localePath(locale, "/menu")} variant="ghost">
+          {strings.home.viewFullMenu}
         </Button>
       </Reveal>
     </section>

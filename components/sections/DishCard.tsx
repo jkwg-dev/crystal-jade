@@ -1,12 +1,20 @@
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { SiteImage } from "@/components/ui/SiteImage";
-import { DISH_CATEGORY_LABEL, type Dish } from "@/types";
+import type { MenuGridStrings } from "@/lib/i18n";
+import type { Dish } from "@/types";
 
 /**
  * Menu dish card (mockup `.dish`): large-format photo slot, jade category
  * label, EN name over the 中文 name in the system zh stack, and one line.
+ * Labels arrive resolved from the server parent via `DishGrid`.
  */
-export function DishCard({ dish }: { dish: Dish }) {
+export function DishCard({
+  dish,
+  strings,
+}: {
+  dish: Dish;
+  strings: MenuGridStrings;
+}) {
   return (
     <>
       <PhotoFrame
@@ -14,7 +22,7 @@ export function DishCard({ dish }: { dish: Dish }) {
         label={
           dish.image
             ? undefined
-            : { kicker: "Large-format photo", name: dish.name }
+            : { kicker: strings.photoKicker, name: dish.name }
         }
         className="mb-5 aspect-[16/10]"
       >
@@ -30,7 +38,7 @@ export function DishCard({ dish }: { dish: Dish }) {
         )}
       </PhotoFrame>
       <p className="text-jade-text mb-2.5 text-[8.5px] leading-none font-medium tracking-[0.3em] uppercase">
-        {DISH_CATEGORY_LABEL[dish.category]}
+        {strings.categories[dish.category]}
       </p>
       <h3 className="font-serif text-[23px] leading-[1.25] font-medium">
         {dish.name}

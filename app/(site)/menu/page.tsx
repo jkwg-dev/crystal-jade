@@ -3,6 +3,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { DiningBand } from "@/components/sections/DiningBand";
 import { DishGrid } from "@/components/sections/DishGrid";
 import { getDishes, getRestaurant } from "@/lib/content";
+import { getStrings } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Menu",
@@ -14,32 +15,33 @@ export const metadata: Metadata = {
  * `/menu` (menu mockup v6): hero band over the category-filtered dish grid.
  */
 export default async function MenuPage() {
+  const locale = "en";
+  const strings = getStrings(locale).menu;
   const [dishes, restaurant] = await Promise.all([
-    getDishes(),
-    getRestaurant(),
+    getDishes(locale),
+    getRestaurant(locale),
   ]);
   return (
     <>
       <DiningBand
-        eyebrow="The Menu"
-        title="Signature *dishes*."
-        line="Dishes that change with the seasons. Technique that does not."
+        eyebrow={strings.bandEyebrow}
+        title={strings.bandTitle}
+        line={strings.bandLine}
         frame={{
           tint: "champagne",
-          kicker: "Full-width banner",
-          name: "Signature Dish · Editorial Photography",
-          tag: "Replace with final dish photography",
+          kicker: strings.bandFrame.kicker,
+          name: strings.bandFrame.name,
+          tag: strings.bandFrame.tag,
         }}
         media={restaurant.bands?.menu}
       />
       <section className="dine-sec">
-        <DishGrid dishes={dishes} />
+        <DishGrid dishes={dishes} strings={strings.grid} />
         <Reveal
           as="p"
           className="text-champagne-bright/85 mt-16 text-center font-serif text-base italic"
         >
-          Our menu evolves with the seasons and the chef&apos;s current
-          inspiration.
+          {strings.closing}
         </Reveal>
       </section>
     </>

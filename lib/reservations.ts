@@ -1,4 +1,5 @@
 import { BOOK_A_TABLE_HREF, getRestaurant } from "./content";
+import { localePath, type Locale } from "./i18n";
 
 /**
  * The reservation seam.
@@ -24,22 +25,22 @@ export type ReservationTarget = {
 
 export interface ReservationProvider {
   /** The global Book a Table entry: header, menu, and section CTAs. */
-  book(): Promise<ReservationTarget>;
+  book(locale: Locale): Promise<ReservationTarget>;
   /** The terminal action on the reserve page (the future booking surface). */
-  reserve(): Promise<ReservationTarget>;
+  reserve(locale: Locale): Promise<ReservationTarget>;
 }
 
 /**
- * Link provider: Book a Table routes to the reserve page; the reserve
- * page's own CTA goes to the configured OpenTable URL once it exists,
- * and to the on-page embed-placeholder anchor until then.
+ * Link provider: Book a Table routes to the reserve page of the caller's
+ * locale; the reserve page's own CTA goes to the configured OpenTable URL
+ * once it exists, and to the on-page embed-placeholder anchor until then.
  */
 const linkProvider: ReservationProvider = {
-  async book() {
-    return { href: BOOK_A_TABLE_HREF };
+  async book(locale) {
+    return { href: localePath(locale, BOOK_A_TABLE_HREF) };
   },
-  async reserve() {
-    const { reserve } = await getRestaurant();
+  async reserve(locale) {
+    const { reserve } = await getRestaurant(locale);
     return reserve.openTableUrl
       ? { href: reserve.openTableUrl, external: true }
       : { href: "#reservations" };

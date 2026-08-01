@@ -2,6 +2,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { FactRows } from "@/components/ui/FactRows";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { getStrings, type Locale } from "@/lib/i18n";
 import type { RestaurantBanquet } from "@/types";
 import { DiningHead } from "./DiningHead";
 
@@ -9,10 +10,17 @@ import { DiningHead } from "./DiningHead";
  * Banquet Services (banquet mockup section 2): the service narrative with
  * fact rows and the occasions list beside the banquet-table photo slot.
  */
-export function BanquetFacts({ banquet }: { banquet: RestaurantBanquet }) {
+export function BanquetFacts({
+  locale,
+  banquet,
+}: {
+  locale: Locale;
+  banquet: RestaurantBanquet;
+}) {
+  const strings = getStrings(locale).banquet;
   const rows = [
     ...banquet.facts,
-    { label: "Occasions", value: banquet.occasions.join(" · ") },
+    { label: strings.occasionsLabel, value: banquet.occasions.join(" · ") },
   ];
 
   return (
@@ -20,8 +28,8 @@ export function BanquetFacts({ banquet }: { banquet: RestaurantBanquet }) {
       <div className="dine-split">
         <div>
           <DiningHead
-            eyebrow="Banquet Services"
-            title={"Composed around\nthe *table*."}
+            eyebrow={strings.servicesEyebrow}
+            title={strings.servicesTitle}
           />
           <Reveal
             as="p"
@@ -45,11 +53,12 @@ export function BanquetFacts({ banquet }: { banquet: RestaurantBanquet }) {
             label={
               banquet.tableImage
                 ? undefined
-                : { kicker: "Food image", name: "Banquet Table" }
+                : {
+                    kicker: strings.tableFrame.kicker,
+                    name: strings.tableFrame.name,
+                  }
             }
-            tag={
-              banquet.tableImage ? undefined : "Replace with final photography"
-            }
+            tag={banquet.tableImage ? undefined : strings.tableFrame.tag}
             className="aspect-[4/5] max-h-[560px] max-[900px]:aspect-square max-[900px]:max-h-[440px]"
           >
             {banquet.tableImage && (

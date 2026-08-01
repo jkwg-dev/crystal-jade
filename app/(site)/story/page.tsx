@@ -4,6 +4,7 @@ import { KitchenPhilosophy } from "@/components/sections/KitchenPhilosophy";
 import { StoryHeritage } from "@/components/sections/StoryHeritage";
 import { StoryRichmond } from "@/components/sections/StoryRichmond";
 import { getRestaurant } from "@/lib/content";
+import { getStrings } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Our Story",
@@ -16,23 +17,25 @@ export const metadata: Metadata = {
  * Why Richmond Why Now, and the Kitchen Philosophy cards.
  */
 export default async function StoryPage() {
-  const restaurant = await getRestaurant();
+  const locale = "en";
+  const strings = getStrings(locale).story;
+  const restaurant = await getRestaurant(locale);
   return (
     <>
       <DiningBand
-        eyebrow="Our Story"
-        title={"From a single kitchen\nto the world."}
+        eyebrow={strings.bandEyebrow}
+        title={strings.bandTitle}
         frame={{
           tint: "emerald",
-          kicker: "Image placeholder",
-          name: "Crystal Jade Brand Imagery",
-          tag: "Replace with brand photography per brand guide",
+          kicker: strings.bandFrame.kicker,
+          name: strings.bandFrame.name,
+          tag: strings.bandFrame.tag,
         }}
         media={restaurant.bands?.story}
       />
-      <StoryHeritage story={restaurant.story} />
-      <StoryRichmond story={restaurant.story} />
-      <KitchenPhilosophy cards={restaurant.story.philosophy} />
+      <StoryHeritage locale={locale} story={restaurant.story} />
+      <StoryRichmond locale={locale} story={restaurant.story} />
+      <KitchenPhilosophy locale={locale} cards={restaurant.story.philosophy} />
     </>
   );
 }

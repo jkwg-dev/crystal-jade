@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { getStrings, type Locale } from "@/lib/i18n";
 import type { RestaurantStory } from "@/types";
 import { DiningHead } from "./DiningHead";
 
@@ -9,14 +10,21 @@ import { DiningHead } from "./DiningHead";
  * the map placeholder, closed by the footprint list with the highlighted
  * "Now, Richmond" stop. Footprint pending brand-guide confirmation.
  */
-export function StoryHeritage({ story }: { story: RestaurantStory }) {
+export function StoryHeritage({
+  locale,
+  story,
+}: {
+  locale: Locale;
+  story: RestaurantStory;
+}) {
+  const strings = getStrings(locale).story;
   return (
     <section className="dine-sec">
       <div className="dine-split">
         <div>
           <DiningHead
-            eyebrow="Heritage"
-            title={"Carried across the region's\ngreat *cities*."}
+            eyebrow={strings.heritageEyebrow}
+            title={strings.heritageTitle}
           />
           <Reveal
             as="p"
@@ -51,13 +59,12 @@ export function StoryHeritage({ story }: { story: RestaurantStory }) {
             label={
               story.heritage.image
                 ? undefined
-                : { kicker: "Map placeholder", name: "Global Footprint" }
+                : {
+                    kicker: strings.heritageFrame.kicker,
+                    name: strings.heritageFrame.name,
+                  }
             }
-            tag={
-              story.heritage.image
-                ? undefined
-                : "Confirm footprint list with Crystal Jade brand guide"
-            }
+            tag={story.heritage.image ? undefined : strings.heritageFrame.tag}
             className="aspect-[16/11]"
           >
             {story.heritage.image && (

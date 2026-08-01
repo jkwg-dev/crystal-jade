@@ -3,6 +3,7 @@ import { BanquetFacts } from "@/components/sections/BanquetFacts";
 import { BespokeMenus } from "@/components/sections/BespokeMenus";
 import { DiningBand } from "@/components/sections/DiningBand";
 import { getRestaurant } from "@/lib/content";
+import { getStrings } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Banquet",
@@ -15,23 +16,25 @@ export const metadata: Metadata = {
  * occasions beside the photo slot, and the Bespoke Menus panel.
  */
 export default async function BanquetPage() {
-  const restaurant = await getRestaurant();
+  const locale = "en";
+  const strings = getStrings(locale).banquet;
+  const restaurant = await getRestaurant(locale);
   return (
     <>
       <DiningBand
-        eyebrow="Banquet & Private Dining"
-        title={"Rooms for the occasions\nthat *matter*."}
-        line="Private rooms, dedicated service, and menus composed for the table."
+        eyebrow={strings.bandEyebrow}
+        title={strings.bandTitle}
+        line={strings.bandLine}
         frame={{
           tint: "emerald",
-          kicker: "Image placeholder",
-          name: "Banquet Hall · Private Dining Room",
-          tag: "Replace with final photography",
+          kicker: strings.bandFrame.kicker,
+          name: strings.bandFrame.name,
+          tag: strings.bandFrame.tag,
         }}
         media={restaurant.bands?.banquet}
       />
-      <BanquetFacts banquet={restaurant.banquet} />
-      <BespokeMenus banquet={restaurant.banquet} />
+      <BanquetFacts locale={locale} banquet={restaurant.banquet} />
+      <BespokeMenus locale={locale} banquet={restaurant.banquet} />
     </>
   );
 }

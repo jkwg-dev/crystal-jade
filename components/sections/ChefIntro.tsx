@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { getStrings, type Locale } from "@/lib/i18n";
 import type { RestaurantChef } from "@/types";
 import { ChefQuote } from "./ChefQuote";
 import { CredBars } from "./CredBars";
@@ -14,7 +15,14 @@ const NOTE_HEADING_CLASS =
  * slot beside the intro, credential bars, His Story with the Notable Moments
  * list, and the quote block.
  */
-export function ChefIntro({ chef }: { chef: RestaurantChef }) {
+export function ChefIntro({
+  locale,
+  chef,
+}: {
+  locale: Locale;
+  chef: RestaurantChef;
+}) {
+  const strings = getStrings(locale).chef;
   return (
     <section className="dine-sec">
       <div className="grid grid-cols-[1fr_1.15fr] items-start gap-[5vw] max-[900px]:grid-cols-1 max-[900px]:gap-11">
@@ -26,15 +34,11 @@ export function ChefIntro({ chef }: { chef: RestaurantChef }) {
               chef.portrait
                 ? undefined
                 : {
-                    kicker: "Portrait placeholder",
-                    name: "Chef Portrait · Kitchen Setting",
+                    kicker: strings.portraitFrame.kicker,
+                    name: strings.portraitFrame.name,
                   }
             }
-            tag={
-              chef.portrait
-                ? undefined
-                : "Kitchen setting, not a studio headshot"
-            }
+            tag={chef.portrait ? undefined : strings.portraitFrame.tag}
             className="aspect-[4/5] max-[900px]:aspect-square max-[900px]:max-h-[440px]"
           >
             {chef.portrait && (
@@ -52,19 +56,19 @@ export function ChefIntro({ chef }: { chef: RestaurantChef }) {
 
         <div>
           {/* The band-less pages promote the section head to the page h1. */}
-          <DiningHead eyebrow="The Chef" title={chef.intro} as="h1" />
+          <DiningHead eyebrow={strings.eyebrow} title={chef.intro} as="h1" />
 
-          <CredBars awards={chef.awards} />
+          <CredBars awards={chef.awards} note={strings.emblemNote} />
 
           <Reveal as="div" delay={380} className="mt-9">
-            <h4 className={NOTE_HEADING_CLASS}>His Story</h4>
+            <h4 className={NOTE_HEADING_CLASS}>{strings.hisStory}</h4>
             <p className="text-mist max-w-[520px] text-[14px]">{chef.bio}</p>
           </Reveal>
 
-          <ChefQuote quote={chef.quote} />
+          <ChefQuote quote={chef.quote} cite={strings.quoteCite} />
 
           <Reveal as="div" delay={460} className="mt-9">
-            <h4 className={NOTE_HEADING_CLASS}>Notable Moments</h4>
+            <h4 className={NOTE_HEADING_CLASS}>{strings.notableMoments}</h4>
             <ul>
               {chef.moments.map((moment) => (
                 <li

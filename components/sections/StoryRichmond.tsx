@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { getStrings, type Locale } from "@/lib/i18n";
 import type { RestaurantStory } from "@/types";
 import { DiningHead } from "./DiningHead";
 
@@ -8,7 +9,14 @@ import { DiningHead } from "./DiningHead";
  * Why Richmond, Why Now (story mockup section 3): the homecoming narrative
  * beside the Richmond photo slot, image first.
  */
-export function StoryRichmond({ story }: { story: RestaurantStory }) {
+export function StoryRichmond({
+  locale,
+  story,
+}: {
+  locale: Locale;
+  story: RestaurantStory;
+}) {
+  const strings = getStrings(locale).story;
   return (
     <section className="dine-sec">
       <div className="dine-split img-first">
@@ -20,15 +28,11 @@ export function StoryRichmond({ story }: { story: RestaurantStory }) {
               story.richmond.image
                 ? undefined
                 : {
-                    kicker: "Image placeholder",
-                    name: "Richmond · The Vancouver Chapter",
+                    kicker: strings.richmondFrame.kicker,
+                    name: strings.richmondFrame.name,
                   }
             }
-            tag={
-              story.richmond.image
-                ? undefined
-                : "Replace with final photography"
-            }
+            tag={story.richmond.image ? undefined : strings.richmondFrame.tag}
             className="aspect-[4/5] max-h-[560px] max-[900px]:aspect-square max-[900px]:max-h-[440px]"
           >
             {story.richmond.image && (
@@ -45,8 +49,8 @@ export function StoryRichmond({ story }: { story: RestaurantStory }) {
         </Reveal>
         <div>
           <DiningHead
-            eyebrow="Why Richmond, Why Now"
-            title={"Not an introduction.\nA *homecoming*."}
+            eyebrow={strings.richmondEyebrow}
+            title={strings.richmondTitle}
           />
           <Reveal
             as="p"

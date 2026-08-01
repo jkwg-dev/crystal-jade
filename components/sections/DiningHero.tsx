@@ -2,9 +2,8 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { getStrings, type Locale } from "@/lib/i18n";
 import type { InterimImage } from "@/types";
-
-const EYEBROW = "Cantonese Fine Dining · GreenTee Richmond Center";
 
 /**
  * Full-screen landing hero (mockup `.hero-full`). The visual slot stays a
@@ -13,14 +12,17 @@ const EYEBROW = "Cantonese Fine Dining · GreenTee Richmond Center";
  * site header at every width.
  */
 export function DiningHero({
+  locale,
   title,
   tagline,
   media,
 }: {
+  locale: Locale;
   title: string;
   tagline: string;
   media?: InterimImage;
 }) {
+  const strings = getStrings(locale).home;
   return (
     <section className="relative h-[min(76svh,720px)] min-h-[460px] max-[900px]:h-[78svh]">
       <PhotoFrame
@@ -30,15 +32,11 @@ export function DiningHero({
           media
             ? undefined
             : {
-                kicker: "Full-screen visual",
-                name: "Dining Room · Photo or Video Loop",
+                kicker: strings.heroFrame.kicker,
+                name: strings.heroFrame.name,
               }
         }
-        tag={
-          media
-            ? undefined
-            : "Replace with restaurant photography or video loop"
-        }
+        tag={media ? undefined : strings.heroFrame.tag}
         className="pf-quiet absolute inset-0"
       >
         {media && (
@@ -63,7 +61,9 @@ export function DiningHero({
 
       <div className="absolute inset-x-11 bottom-12 z-[5] max-w-[680px] max-[900px]:inset-x-6 max-[900px]:bottom-8">
         <Reveal as="div">
-          <Eyebrow className="before:opacity-[0.85]">{EYEBROW}</Eyebrow>
+          <Eyebrow className="before:opacity-[0.85]">
+            {strings.heroEyebrow}
+          </Eyebrow>
         </Reveal>
         <Reveal
           as="h1"
@@ -83,7 +83,7 @@ export function DiningHero({
 
       <a
         href="#intro"
-        aria-label="Scroll to introduction"
+        aria-label={strings.heroScrollAria}
         className="dine-scrolldown"
       >
         <span />

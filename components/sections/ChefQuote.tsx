@@ -2,9 +2,10 @@ import { Reveal } from "@/components/motion/Reveal";
 
 /**
  * In His Own Words (chef mockup `.quote`): serif italic quote on a jade wash
- * behind a champagne rule, placeholder pending the chef interview.
+ * behind a champagne rule, placeholder pending the chef interview. The cite
+ * line is localized by the parent.
  */
-export function ChefQuote({ quote }: { quote: string }) {
+export function ChefQuote({ quote, cite }: { quote: string; cite: string }) {
   return (
     <Reveal
       as="blockquote"
@@ -15,7 +16,7 @@ export function ChefQuote({ quote }: { quote: string }) {
         {quote}
       </p>
       <cite className="text-mist mt-3.5 block text-[9px] leading-none font-medium tracking-[0.3em] uppercase not-italic">
-        In His Own Words · Placeholder, replace with chef interview
+        {cite}
       </cite>
     </Reveal>
   );

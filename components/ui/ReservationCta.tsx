@@ -8,7 +8,9 @@ export type ReservationCtaProps = {
   size?: "default" | "sm";
   className?: string;
   onClick?: React.MouseEventHandler<HTMLAnchorElement>;
-  children?: React.ReactNode;
+  /** The localized label; always passed by the caller (no baked default,
+      so no locale can leak through a forgotten fallback). */
+  children: React.ReactNode;
 };
 
 /**
@@ -33,7 +35,7 @@ export function ReservationCta({
       onClick={onClick}
       {...(target.external && { target: "_blank", rel: "noopener noreferrer" })}
     >
-      {children ?? "Book a Table"}
+      {children}
     </Button>
   );
 }

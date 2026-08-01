@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { DiningInfoStrip } from "@/components/sections/DiningInfoStrip";
-import { getRestaurant, sitePages } from "@/lib/content";
+import { getRestaurant, getSitePages } from "@/lib/content";
+import { getStrings, localePath } from "@/lib/i18n";
 import { getReservationProvider } from "@/lib/reservations";
 
 /**
@@ -29,23 +30,31 @@ export const metadata: Metadata = {
 export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = "en";
+  const strings = getStrings(locale);
   const [restaurant, bookTarget] = await Promise.all([
-    getRestaurant(),
-    getReservationProvider().book(),
+    getRestaurant(locale),
+    getReservationProvider().book(locale),
   ]);
   return (
     <>
       <a href="#content" className="skip-link">
-        Skip to content
+        {strings.chrome.skipToContent}
       </a>
       <div id="top" className="dine-bg pb-16">
-        <SiteHeader pages={sitePages} bookTarget={bookTarget} />
+        <SiteHeader
+          locale={locale}
+          homeHref={localePath(locale, "/")}
+          pages={getSitePages(locale)}
+          bookTarget={bookTarget}
+          strings={strings.chrome.header}
+        />
         <div className="dine-shell">
           <main id="content" tabIndex={-1} className="dine-main outline-none">
             {children}
           </main>
         </div>
-        <DiningInfoStrip restaurant={restaurant} />
+        <DiningInfoStrip locale={locale} restaurant={restaurant} />
       </div>
     </>
   );

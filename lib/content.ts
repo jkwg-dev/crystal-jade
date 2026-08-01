@@ -1,6 +1,7 @@
 import imageUrlBuilder from "@sanity/image-url";
 import { createClient, groq, type SanityClient } from "next-sanity";
 import { apiVersion, dataset, projectId, sanityConfigured } from "@/sanity/env";
+import { localePath, type Locale } from "@/lib/i18n";
 import { PHOTO_TINT_CLASS } from "@/lib/tints";
 import type {
   Dish,
@@ -12,7 +13,9 @@ import type {
 } from "@/types";
 import { DISH_CATEGORY_LABEL } from "@/types";
 import { dishes as configDishes, signatureDishes as configSignatureDishes } from "./content/dishes";
+import { localizeDish, localizeRestaurant, pick } from "./content/localize";
 import { restaurant as configRestaurant } from "./content/restaurant";
+import type { Localized } from "./content/types";
 
 /**
  * The single content accessor for the Crystal Jade site.
@@ -32,13 +35,21 @@ import { restaurant as configRestaurant } from "./content/restaurant";
  */
 
 /** The five page links on the rail and chips, in rail order. */
-export const sitePages: NavLink[] = [
-  { label: "Our Story", href: "/story" },
-  { label: "The Chef", href: "/chef" },
-  { label: "Menu", href: "/menu" },
-  { label: "Banquet", href: "/banquet" },
-  { label: "Reserve", href: "/reserve" },
+const SITE_PAGES: { label: Localized<string>; path: string }[] = [
+  { label: { en: "Our Story", zh: "我們的故事" }, path: "/story" },
+  { label: { en: "The Chef", zh: "主廚" }, path: "/chef" },
+  { label: { en: "Menu", zh: "菜單" }, path: "/menu" },
+  { label: { en: "Banquet", zh: "宴會" }, path: "/banquet" },
+  { label: { en: "Reserve", zh: "訂座" }, path: "/reserve" },
 ];
+
+/** Locale-resolved nav links: zh labels over /zh-prefixed hrefs. */
+export function getSitePages(locale: Locale): NavLink[] {
+  return SITE_PAGES.map((page) => ({
+    label: pick(page.label, locale, `nav ${page.path}`),
+    href: localePath(locale, page.path),
+  }));
+}
 
 /**
  * Book a Table target: the reserve page. Consumed only by the link provider
@@ -466,11 +477,20 @@ async function fromSanity<T>(
 }
 
 /* ------------------------------------------------------------------ */
-/* Public getters: signatures unchanged since the typed-config era.   */
+/* Public getters: async signatures kept, plus the required locale.   */
 /* ------------------------------------------------------------------ */
 
+/*
+ * Z1 interim locale switch: the dataset carries English only until the Z2
+ * schema localization lands, so the zh locale serves the typed config
+ * wholesale, even when Sanity is configured. The switch stays binary per
+ * request and per locale; the two sources never merge. Z2 replaces the
+ * early zh return with locale-aware queries and per-field en fallback.
+ */
+
 /** The restaurant singleton: copy, credentials, story, chef, banquet, reserve. */
-export async function getRestaurant(): Promise<Restaurant> {
+export async function getRestaurant(locale: Locale): Promise<Restaurant> {
+  if (locale === "zh") return localizeRestaurant(configRestaurant, "zh");
   return fromSanity(
     "restaurant",
     async (activeClient) => {
@@ -481,12 +501,15 @@ export async function getRestaurant(): Promise<Restaurant> {
       );
       return raw ? mapRestaurant(raw) : null;
     },
-    configRestaurant,
+    localizeRestaurant(configRestaurant, "en"),
   );
 }
 
 /** All menu dishes, in menu order; the grid also sorts by `order`. */
-export async function getDishes(): Promise<Dish[]> {
+export async function getDishes(locale: Locale): Promise<Dish[]> {
+  if (locale === "zh") {
+    return configDishes.map((dish) => localizeDish(dish, "zh"));
+  }
   return fromSanity(
     "dishes",
     async (activeClient) => {
@@ -497,7 +520,7 @@ export async function getDishes(): Promise<Dish[]> {
       );
       return raw?.map(mapDish);
     },
-    configDishes,
+    configDishes.map((dish) => localizeDish(dish, "en")),
   );
 }
 
@@ -507,7 +530,10 @@ export async function getDishes(): Promise<Dish[]> {
  * editor. Fallback path: the config `signatureDishIds`. Per the S2
  * precedence ruling the active source wins wholesale.
  */
-export async function getSignatureDishes(): Promise<Dish[]> {
+export async function getSignatureDishes(locale: Locale): Promise<Dish[]> {
+  if (locale === "zh") {
+    return configSignatureDishes.map((dish) => localizeDish(dish, "zh"));
+  }
   return fromSanity(
     "signature dishes",
     async (activeClient) => {
@@ -518,6 +544,6 @@ export async function getSignatureDishes(): Promise<Dish[]> {
       );
       return raw?.map(mapDish);
     },
-    configSignatureDishes,
+    configSignatureDishes.map((dish) => localizeDish(dish, "en")),
   );
 }

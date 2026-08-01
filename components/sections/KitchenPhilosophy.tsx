@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { getStrings, type Locale } from "@/lib/i18n";
 import { DINING_SLOT_TINTS } from "@/lib/tints";
 import type { PhilosophyCard } from "@/types";
 import { DiningHead } from "./DiningHead";
@@ -9,12 +10,19 @@ import { DiningHead } from "./DiningHead";
  * Kitchen Philosophy (story mockup section 4, `.phil`): three concept cards,
  * each a 16/11 pending frame over a serif title and one line.
  */
-export function KitchenPhilosophy({ cards }: { cards: PhilosophyCard[] }) {
+export function KitchenPhilosophy({
+  locale,
+  cards,
+}: {
+  locale: Locale;
+  cards: PhilosophyCard[];
+}) {
+  const strings = getStrings(locale).story;
   return (
     <section className="dine-sec">
       <DiningHead
-        eyebrow="Kitchen Philosophy"
-        title="Three ideas, held *quietly*."
+        eyebrow={strings.philosophyEyebrow}
+        title={strings.philosophyTitle}
       />
       <div className="mt-12 grid grid-cols-3 gap-7 max-[900px]:grid-cols-1">
         {cards.map((card, index) => (
@@ -24,7 +32,7 @@ export function KitchenPhilosophy({ cards }: { cards: PhilosophyCard[] }) {
               label={
                 card.image
                   ? undefined
-                  : { kicker: "Concept image", name: card.title }
+                  : { kicker: strings.conceptKicker, name: card.title }
               }
               className="mb-5 aspect-[16/11]"
             >

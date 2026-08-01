@@ -3,15 +3,24 @@ import { Button } from "@/components/ui/Button";
 import { FactRows } from "@/components/ui/FactRows";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { getStrings, type Locale } from "@/lib/i18n";
 import type { RestaurantBanquet } from "@/types";
 import { DiningHead } from "./DiningHead";
 
 /**
  * Bespoke Menus (banquet mockup `.banq-box`): the jade panel with the
  * composed-course photo slot, the Per Person / Per Table rows (pricing on
- * enquiry), and the Enquire Now CTA.
+ * enquiry), and the Enquire Now CTA. `enquiryTarget` arrives already
+ * locale-prefixed from the accessor.
  */
-export function BespokeMenus({ banquet }: { banquet: RestaurantBanquet }) {
+export function BespokeMenus({
+  locale,
+  banquet,
+}: {
+  locale: Locale;
+  banquet: RestaurantBanquet;
+}) {
+  const strings = getStrings(locale).banquet;
   const rows = banquet.menus.map((menu) => ({
     label: menu.label,
     value: menu.line,
@@ -28,11 +37,12 @@ export function BespokeMenus({ banquet }: { banquet: RestaurantBanquet }) {
             label={
               banquet.courseImage
                 ? undefined
-                : { kicker: "Image placeholder", name: "Composed Course" }
+                : {
+                    kicker: strings.courseFrame.kicker,
+                    name: strings.courseFrame.name,
+                  }
             }
-            tag={
-              banquet.courseImage ? undefined : "Replace with final photography"
-            }
+            tag={banquet.courseImage ? undefined : strings.courseFrame.tag}
             className="aspect-[4/3]"
           >
             {banquet.courseImage && (
@@ -49,8 +59,8 @@ export function BespokeMenus({ banquet }: { banquet: RestaurantBanquet }) {
         </Reveal>
         <div>
           <DiningHead
-            eyebrow="Bespoke Menus"
-            title={"Two ways to\n*compose*."}
+            eyebrow={strings.bespokeEyebrow}
+            title={strings.bespokeTitle}
           />
           <Reveal as="div" delay={160}>
             <FactRows
@@ -60,7 +70,7 @@ export function BespokeMenus({ banquet }: { banquet: RestaurantBanquet }) {
             />
           </Reveal>
           <Reveal as="div" delay={280}>
-            <Button href={banquet.enquiryTarget}>Enquire Now</Button>
+            <Button href={banquet.enquiryTarget}>{strings.enquireNow}</Button>
           </Reveal>
         </div>
       </div>

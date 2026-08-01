@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button";
 import { FactRows } from "@/components/ui/FactRows";
 import { PhotoFrame } from "@/components/ui/PhotoFrame";
 import { SiteImage } from "@/components/ui/SiteImage";
+import { getStrings, localePath, type Locale } from "@/lib/i18n";
 import type { Restaurant } from "@/types";
 import { DiningHead } from "./DiningHead";
 
@@ -12,10 +13,13 @@ import { DiningHead } from "./DiningHead";
  * Stacks below 900px.
  */
 export function PrivatePreview({
+  locale,
   privateDining,
 }: {
+  locale: Locale;
   privateDining: Restaurant["privateDining"];
 }) {
+  const strings = getStrings(locale).home;
   return (
     <section className="dine-sec">
       <div className="jade-panel dine-box">
@@ -26,11 +30,12 @@ export function PrivatePreview({
             label={
               privateDining.image
                 ? undefined
-                : { kicker: "Image placeholder", name: "Private Dining Room" }
+                : {
+                    kicker: strings.privateFrame.kicker,
+                    name: strings.privateFrame.name,
+                  }
             }
-            tag={
-              privateDining.image ? undefined : "Replace with final photography"
-            }
+            tag={privateDining.image ? undefined : strings.privateFrame.tag}
             className="aspect-[4/3]"
           >
             {privateDining.image && (
@@ -48,8 +53,8 @@ export function PrivatePreview({
 
         <div>
           <DiningHead
-            eyebrow="Private Dining"
-            title={"Rooms for the occasions\nthat *matter*."}
+            eyebrow={strings.privateEyebrow}
+            title={strings.privateTitle}
           />
           <Reveal
             as="p"
@@ -66,8 +71,8 @@ export function PrivatePreview({
             />
           </Reveal>
           <Reveal as="div" delay={420}>
-            <Button href="/banquet" variant="ghost">
-              Banquet & Private Dining
+            <Button href={localePath(locale, "/banquet")} variant="ghost">
+              {strings.banquetCta}
             </Button>
           </Reveal>
         </div>

@@ -14,9 +14,16 @@ export const metadata: Metadata = {
  * banquet crosslink, and the OpenTable embed placeholder.
  */
 export default async function ReservePage() {
+  const locale = "en";
   const [restaurant, bookTarget] = await Promise.all([
-    getRestaurant(),
-    getReservationProvider().reserve(),
+    getRestaurant(locale),
+    getReservationProvider().reserve(locale),
   ]);
-  return <ReserveBlock reserve={restaurant.reserve} bookTarget={bookTarget} />;
+  return (
+    <ReserveBlock
+      locale={locale}
+      reserve={restaurant.reserve}
+      bookTarget={bookTarget}
+    />
+  );
 }

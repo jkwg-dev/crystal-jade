@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import { CrystalJadeMark } from "@/components/sections/CrystalJadeMark";
 import { ReservationCta } from "@/components/ui/ReservationCta";
+import type { HeaderStrings, Locale } from "@/lib/i18n";
 import type { ReservationTarget } from "@/lib/reservations";
 import { cn } from "@/lib/utils";
 import type { NavLink } from "@/types";
@@ -12,17 +13,24 @@ import { MobileMenu } from "./MobileMenu";
 
 /**
  * Sticky top header: mark left, the five page links, the static EN / 中文
- * indicator (Chinese pending human translation), and the Book a Table CTA
- * right. At 1024px and below the menu collapses to a hamburger opening the
- * full-screen MobileMenu. Active state is route-driven; nav data arrives via
- * props from the layout, which reads it from `lib/content.ts`.
+ * indicator (the active locale carries champagne; the real toggle is the Z3
+ * phase), and the Book a Table CTA right. At 1024px and below the menu
+ * collapses to a hamburger opening the full-screen MobileMenu. Active state
+ * is route-driven; nav data and strings arrive via props from the layout
+ * (props-over-import).
  */
 export function SiteHeader({
+  locale,
+  homeHref,
   pages,
   bookTarget,
+  strings,
 }: {
+  locale: Locale;
+  homeHref: string;
   pages: NavLink[];
   bookTarget: ReservationTarget;
+  strings: HeaderStrings;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -42,10 +50,10 @@ export function SiteHeader({
   return (
     <>
       <header className="site-header">
-        <CrystalJadeMark href="/" size="sm" rule={false} />
+        <CrystalJadeMark href={homeHref} size="sm" rule={false} />
 
         <nav
-          aria-label="Crystal Jade Palace pages"
+          aria-label={strings.navAria}
           className="ml-auto flex max-[1024px]:hidden"
         >
           {pages.map((page) => {
@@ -64,22 +72,26 @@ export function SiteHeader({
         </nav>
 
         <p className="text-mist/50 flex cursor-default gap-3 text-[9.5px] leading-none font-medium tracking-[0.16em] max-[1024px]:hidden">
-          <span className="text-champagne">EN</span>
-          <span className="font-zh">中文</span>
+          <span className={cn(locale === "en" && "text-champagne")}>EN</span>
+          <span className={cn("font-zh", locale === "zh" && "text-champagne")}>
+            中文
+          </span>
         </p>
 
         <ReservationCta
           target={bookTarget}
           size="sm"
           className="max-[1024px]:hidden"
-        />
+        >
+          {strings.bookATable}
+        </ReservationCta>
 
         <button
           ref={toggleRef}
           type="button"
           aria-expanded={open}
           aria-controls="cj-mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? strings.closeMenu : strings.openMenu}
           onClick={() => setOpen((value) => !value)}
           className="sh-burger ml-auto min-[1025px]:hidden"
         >
@@ -91,8 +103,10 @@ export function SiteHeader({
       <MobileMenu
         id="cj-mobile-menu"
         open={open}
+        locale={locale}
         pages={pages}
         bookTarget={bookTarget}
+        strings={strings}
         onClose={() => setOpen(false)}
         toggleRef={toggleRef}
       />

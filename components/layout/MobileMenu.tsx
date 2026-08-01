@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, type RefObject } from "react";
 import { CrystalJadeMark } from "@/components/sections/CrystalJadeMark";
 import { ReservationCta } from "@/components/ui/ReservationCta";
+import type { HeaderStrings, Locale } from "@/lib/i18n";
 import type { ReservationTarget } from "@/lib/reservations";
 import { cn } from "@/lib/utils";
 import type { NavLink } from "@/types";
@@ -22,15 +23,19 @@ const FOCUSABLE = "a[href], button:not([disabled])";
 export function MobileMenu({
   id,
   open,
+  locale,
   pages,
   bookTarget,
+  strings,
   onClose,
   toggleRef,
 }: {
   id: string;
   open: boolean;
+  locale: Locale;
   pages: NavLink[];
   bookTarget: ReservationTarget;
+  strings: HeaderStrings;
   onClose: () => void;
   toggleRef: RefObject<HTMLButtonElement | null>;
 }) {
@@ -87,7 +92,7 @@ export function MobileMenu({
       ref={panelRef}
       role="dialog"
       aria-modal="true"
-      aria-label="Menu"
+      aria-label={strings.menuAria}
       inert={!open}
       className={cn("cj-drawer", open && "open")}
     >
@@ -95,7 +100,7 @@ export function MobileMenu({
         <CrystalJadeMark rule={false} size="sm" />
         <button
           type="button"
-          aria-label="Close menu"
+          aria-label={strings.closeMenu}
           onClick={onClose}
           className="cjd-close"
         >
@@ -104,10 +109,7 @@ export function MobileMenu({
         </button>
       </div>
 
-      <nav
-        aria-label="Crystal Jade Palace pages"
-        className="mt-[9vh] flex flex-col"
-      >
+      <nav aria-label={strings.navAria} className="mt-[9vh] flex flex-col">
         {pages.map((page, index) => {
           const active = pathname === page.href;
           return (
@@ -131,10 +133,14 @@ export function MobileMenu({
         className="cjd-foot mt-auto flex flex-wrap items-center justify-between gap-6 pb-2"
         style={{ transitionDelay: open ? "520ms" : "0ms" }}
       >
-        <ReservationCta target={bookTarget} onClick={onClose} />
+        <ReservationCta target={bookTarget} onClick={onClose}>
+          {strings.bookATable}
+        </ReservationCta>
         <p className="text-mist/50 flex cursor-default gap-3 text-[9.5px] leading-none font-medium tracking-[0.16em]">
-          <span className="text-champagne">EN</span>
-          <span className="font-zh">中文</span>
+          <span className={cn(locale === "en" && "text-champagne")}>EN</span>
+          <span className={cn("font-zh", locale === "zh" && "text-champagne")}>
+            中文
+          </span>
         </p>
       </div>
     </div>

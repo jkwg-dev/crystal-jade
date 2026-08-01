@@ -2,8 +2,12 @@ import {
   createClient,
   type IdentifiedSanityDocumentStub,
 } from "@sanity/client";
-import { dishes, signatureDishIds } from "../lib/content/dishes";
-import { restaurant } from "../lib/content/restaurant";
+import {
+  dishes as dishesContent,
+  signatureDishIds,
+} from "../lib/content/dishes";
+import { localizeDish, localizeRestaurant } from "../lib/content/localize";
+import { restaurant as restaurantContent } from "../lib/content/restaurant";
 import { apiVersion, dataset, projectId } from "../sanity/env";
 
 /**
@@ -44,6 +48,15 @@ if (!token) {
     "SANITY_SEED_TOKEN is unset. Create a write token in Sanity Manage (Editor permissions) and put it in .env or .env.local. It is script-only: the app, the build, and the deploy never need it.",
   );
 }
+
+/*
+ * Z1 interim: the schema stays English-only until the Z2 localization, so
+ * the seed projects the en resolution of the localized config. The
+ * projected documents are byte-identical to the pre-Z1 seed output. Z2
+ * replaces these resolutions with locale-object projections.
+ */
+const restaurant = localizeRestaurant(restaurantContent, "en");
+const dishes = dishesContent.map((dish) => localizeDish(dish, "en"));
 
 type FactRowSource = { label: string; value: string; detail?: string };
 

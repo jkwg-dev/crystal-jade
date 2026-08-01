@@ -1,3 +1,4 @@
+import { getStrings, type Locale } from "@/lib/i18n";
 import type { Restaurant } from "@/types";
 
 const NOTE_CLASS =
@@ -7,20 +8,30 @@ const NOTE_CLASS =
  * Restaurant details strip closing every page (mockup `.cjp-strip`). Hours,
  * phone, the WeChat handle, and the social URLs are placeholders.
  */
-export function DiningInfoStrip({ restaurant }: { restaurant: Restaurant }) {
+export function DiningInfoStrip({
+  locale,
+  restaurant,
+}: {
+  locale: Locale;
+  restaurant: Restaurant;
+}) {
+  const strings = getStrings(locale).chrome;
   const { reserve } = restaurant;
 
   return (
     <aside
-      aria-label="Crystal Jade Palace details"
+      aria-label={strings.detailsAria}
       className="border-champagne/[0.22] from-jade/[0.16] mx-[5vw] flex flex-wrap items-baseline gap-x-10 gap-y-3 border bg-linear-to-r to-transparent to-70% px-7 py-6"
     >
       <span className="text-ivory font-serif text-[17px] font-medium">
         {restaurant.name}
       </span>
-      <span className={NOTE_CLASS}>{reserve.hours.join(" · ")}, daily</span>
       <span className={NOTE_CLASS}>
-        {reserve.phone} · WeChat {reserve.wechat}
+        {reserve.hours.join(" · ")}
+        {strings.daily}
+      </span>
+      <span className={NOTE_CLASS}>
+        {reserve.phone} · {strings.wechat} {reserve.wechat}
       </span>
       <span className="ml-auto flex gap-[18px] max-[900px]:ml-0">
         {restaurant.socials.map((social) => (

@@ -16,14 +16,16 @@ export const metadata: Metadata = {
  * Signature Dishes trio, and the Private Dining preview.
  */
 export default async function HomePage() {
+  const locale = "en";
   const [restaurant, trio, bookTarget] = await Promise.all([
-    getRestaurant(),
-    getSignatureDishes(),
-    getReservationProvider().book(),
+    getRestaurant(locale),
+    getSignatureDishes(locale),
+    getReservationProvider().book(locale),
   ]);
   return (
     <>
       <DiningHero
+        locale={locale}
         title={restaurant.name}
         tagline={restaurant.tagline}
         media={restaurant.heroMedia}
@@ -47,8 +49,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <SignatureTrio dishes={trio} bookTarget={bookTarget} />
-      <PrivatePreview privateDining={restaurant.privateDining} />
+      <SignatureTrio locale={locale} dishes={trio} bookTarget={bookTarget} />
+      <PrivatePreview locale={locale} privateDining={restaurant.privateDining} />
     </>
   );
 }

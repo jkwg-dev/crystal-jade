@@ -119,9 +119,15 @@ function Crest({ index }: { index: number }) {
 /**
  * Credential rail (chef mockup `.creds`): three gold-gradient emblem bars,
  * each an SVG line-art crest beside the award title and its jade year line,
- * closed by the placeholder note.
+ * closed by the placeholder note (localized by the parent).
  */
-export function CredBars({ awards }: { awards: ChefAward[] }) {
+export function CredBars({
+  awards,
+  note,
+}: {
+  awards: ChefAward[];
+  note: string;
+}) {
   return (
     <div className="mt-10 mb-2 flex flex-col gap-3.5">
       {awards.map((award, index) => (
@@ -143,7 +149,7 @@ export function CredBars({ awards }: { awards: ChefAward[] }) {
         </Reveal>
       ))}
       <p className="text-mist/60 mt-1 text-[8.5px] leading-[1.6] font-medium tracking-[0.22em] uppercase">
-        Emblems are placeholders. Replace with official award assets.
+        {note}
       </p>
     </div>
   );

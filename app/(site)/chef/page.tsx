@@ -14,6 +14,7 @@ export const metadata: Metadata = {
  * In His Own Words quote block.
  */
 export default async function ChefPage() {
-  const restaurant = await getRestaurant();
-  return <ChefIntro chef={restaurant.chef} />;
+  const locale = "en";
+  const restaurant = await getRestaurant(locale);
+  return <ChefIntro locale={locale} chef={restaurant.chef} />;
 }
