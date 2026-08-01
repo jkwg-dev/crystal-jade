@@ -35,5 +35,11 @@ stays green; that is the standing extraction test.
 
 - All content flows through typed getters in `lib/content.ts`; components
   never hold copy or see CMS types. See `CLAUDE.md` for the working rules
-  (standalone rule, content accessor, Sanity-later, OpenTable-later, GSAP,
+  (standalone rule, content accessor, localization, OpenTable-later, GSAP,
   accessibility).
+- The six pages exist in English at the root routes and in Traditional
+  Chinese under `/zh`. Route files are one-line wrappers over shared page
+  components in `components/pages/`; chrome strings come from the typed
+  dictionary in `lib/i18n.ts`; translatable config fields are `{ en, zh }`
+  objects resolved by the accessor's required `locale` argument, with
+  missing zh values falling back to English.

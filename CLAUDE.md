@@ -4,10 +4,14 @@ Standalone Next.js (App Router) + TypeScript strict + Tailwind v4 site for
 Crystal Jade Palace, the Cantonese fine dining restaurant at GreenTee Richmond
 Center. Split out of the GreenTee site to live on its own domain, its own
 Vercel project, and its own Sanity project (never the GreenTee one). English
-only; the EN / 中文 indicator stays inert until human translation lands.
+lives at the root routes; Traditional Chinese lives under `/zh` (see
+Localization). The header EN / 中文 indicator stays inert until the Z3
+toggle phase lands.
 
 Routes: `/` (landing), `/story`, `/chef`, `/menu`, `/banquet`, `/reserve`.
 These map one-to-one to the former GreenTee `/dining` and `/dining/*` pages.
+The same six pages exist in Traditional Chinese under `/zh` (`/zh`,
+`/zh/story`, and so on), rendered by the same shared page components.
 
 ## The standalone rule
 
@@ -28,9 +32,10 @@ and running `pnpm install && pnpm build` inside it must succeed unchanged.
 
 ## Content accessor rule
 
-All content flows through typed getters in `lib/content.ts` (backed by local
-typed config for now). Components never hold copy, nav items, hours, prices,
-or menu data inline, and never see a CMS type.
+All content flows through typed getters in `lib/content.ts` (Sanity-backed,
+with the typed config in `lib/content/` as the fallback). Components never
+hold copy, nav items, hours, prices, or menu data inline, and never see a
+CMS type.
 
 - **Two Sanity zones, no more.** Exactly two areas of this repo may import
   from Sanity packages. One: `lib/content.ts`, the only module that fetches
@@ -49,6 +54,15 @@ or menu data inline, and never see a CMS type.
   the config content. The extraction test doubles as this fallback test. At
   request time, a failed or empty Sanity fetch logs and falls back to typed
   config rather than rendering a broken page.
+- **Getters take a locale.** Every getter takes a required `locale`
+  (`"en" | "zh"`) and returns fully resolved domain types; components stay
+  locale-blind as well as source-blind. Translatable prose lives as
+  `{ en, zh }` locale objects in the typed config; structural fields stay
+  flat; `Dish.zhName` stays a plain bilingual design field on both locales.
+  A missing zh value resolves to the en value and logs a `[content]` line.
+  Until the Z2 schema localization lands, the zh locale is served wholesale
+  from typed config even when Sanity is configured; en keeps the S3 binary
+  Sanity-or-config switch unchanged.
 - **Public read, no tokens in the app.** The dataset is public read
   (marketing content only). The app fetches without a token; no Sanity
   secret ever reaches client code, and no env vars beyond the two public
@@ -75,6 +89,35 @@ or menu data inline, and never see a CMS type.
   boundary.
 - No database. No secrets in client bundles. No env vars beyond the two
   public Sanity identifiers and the script-only seed token without a ruling.
+
+## Localization
+
+- Two locales only: English at the root routes, Traditional Chinese
+  (zh-Hant) under `/zh`. Simplified Chinese is explicitly out of scope.
+  `html lang` is `en` at root and `zh-Hant` under `/zh`.
+- Route files are one-line delegations. Every `app/(site)/*/page.tsx` and
+  `app/zh/*/page.tsx` only exports metadata built by `lib/seo.ts` and
+  renders its shared page component from `components/pages/` with a
+  `locale` prop. Page JSX, fetches, and copy never live in a route file, so
+  the two trees cannot drift.
+- Metadata, canonicals, and the hreflang pairs are authored once in
+  `lib/seo.ts`; both wrappers of a page call the same builder.
+- Chrome strings (nav labels, buttons, section heads, aria labels,
+  pending-frame labels, meta titles) live in the typed dictionary in
+  `lib/i18n.ts`. Server Components read it through their `locale` prop;
+  client leaves receive resolved strings as props and never import the
+  dictionary or the accessor (props-over-import).
+- zh-Hant copy is drafted in a Hong Kong fine dining register (米芝蓮,
+  never 米其林) and is pending native review; every drafted string will be
+  tracked in `docs/zh-review.md` when Z3 lands. Brand and place names
+  without a confirmed official Chinese name (Crystal Jade Palace, GreenTee
+  Richmond Center) stay in English inside zh copy: never invent a Chinese
+  trade name. English placeholder copy stays placeholder in zh.
+- The no-dash and no-exclamation rules apply in both languages: no 破折號,
+  ranges written "2022 至 2025" in zh. Chinese prose uses full-width
+  punctuation.
+- Typography adjustments for CJK (font stacks, italics, tracking) happen
+  only by checkpoint ruling, never silently.
 
 ## Reservations: OpenTable later
 
@@ -116,9 +159,11 @@ stand in for the main site's domain.
   (chef portrait, dishes, private rooms).
 - No literal florals, no regular repeating decorative patterns; grain only
   via the irregular fractal-noise overlay recipe.
-- Copy: English only. Never an em dash or an en dash anywhere; write ranges
-  as "2022 to 2025" and times as "6:00 to 6:30 PM". No exclamation points
-  anywhere on this site. No membership language, no "media art".
+- Copy: English at the root routes, Traditional Chinese under `/zh`. Never
+  an em dash or an en dash anywhere in either language; write ranges as
+  "2022 to 2025" (zh: "2022 至 2025") and times as "6:00 to 6:30 PM". No
+  exclamation points anywhere on this site, in either language. No
+  membership language, no "media art".
 
 ## GSAP rules
 
