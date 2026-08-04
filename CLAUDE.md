@@ -60,9 +60,13 @@ CMS type.
   `{ en, zh }` locale objects in the typed config; structural fields stay
   flat; `Dish.zhName` stays a plain bilingual design field on both locales.
   A missing zh value resolves to the en value and logs a `[content]` line.
-  Until the Z2 schema localization lands, the zh locale is served wholesale
-  from typed config even when Sanity is configured; en keeps the S3 binary
-  Sanity-or-config switch unchanged.
+  Translatable fields in the dataset are the same `{ en, zh }` locale
+  objects; both locales fetch Sanity through the same query and the mapper
+  resolves per locale, with a missing zh in a document resolving to that
+  document's en value under the same logged `[content]` line. The binary
+  Sanity-or-config switch stays per locale and per request: on fetch
+  failure, empty results, or no env, each locale serves its typed-config
+  resolution wholesale. The sources never merge.
 - **Public read, no tokens in the app.** The dataset is public read
   (marketing content only). The app fetches without a token; no Sanity
   secret ever reaches client code, and no env vars beyond the two public
@@ -113,6 +117,18 @@ CMS type.
   without a confirmed official Chinese name (Crystal Jade Palace, GreenTee
   Richmond Center) stay in English inside zh copy: never invent a Chinese
   trade name. English placeholder copy stays placeholder in zh.
+- By ruling (2026-08-04), four brand items keep their English forms in zh
+  copy: the restaurant trade name (Crystal Jade Palace), GreenTee Richmond
+  Center, award titles, and the address line. This is closed, not pending.
+  It reopens only if the business supplies official Chinese names, which
+  then land as Studio content edits (the fields are locale objects), never
+  code.
+- The seed projects the locale objects from typed config and read-merges
+  every existing image field (restaurant slots, philosophy card images by
+  key, dish photos) into its replacement documents before
+  `createOrReplace`: absent fields are cleared by replacement (proven
+  2026-08-04), so the merge is what makes reseeding safe once photography
+  lands.
 - The no-dash and no-exclamation rules apply in both languages: no 破折號,
   ranges written "2022 至 2025" in zh. Chinese prose uses full-width
   punctuation.
