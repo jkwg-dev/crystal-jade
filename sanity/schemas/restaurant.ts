@@ -20,14 +20,13 @@ export const restaurant = defineType({
     defineField({
       name: "tagline",
       title: "Tagline",
-      type: "string",
+      type: "localeString",
       description: "Credential line under the hero H1.",
     }),
     defineField({
       name: "lede",
       title: "Lede",
-      type: "text",
-      rows: 3,
+      type: "localeText",
       description:
         "One-paragraph positioning line, reused in previews and metadata.",
     }),
@@ -36,12 +35,11 @@ export const restaurant = defineType({
       title: "Landing intro",
       type: "object",
       fields: [
-        defineField({ name: "lede", title: "Lede", type: "text", rows: 3 }),
+        defineField({ name: "lede", title: "Lede", type: "localeText" }),
         defineField({
           name: "support",
           title: "Support",
-          type: "text",
-          rows: 3,
+          type: "localeText",
         }),
       ],
     }),
@@ -94,7 +92,7 @@ export const restaurant = defineType({
       title: "Private dining",
       type: "object",
       fields: [
-        defineField({ name: "copy", title: "Copy", type: "text", rows: 4 }),
+        defineField({ name: "copy", title: "Copy", type: "localeText" }),
         defineField({
           name: "facts",
           title: "Facts",
@@ -123,14 +121,13 @@ export const restaurant = defineType({
             defineField({
               name: "lead",
               title: "Lead",
-              type: "text",
-              rows: 3,
+              type: "localeText",
             }),
             defineField({
               name: "body",
               title: "Body paragraphs",
               type: "array",
-              of: [defineArrayMember({ type: "text", rows: 3 })],
+              of: [defineArrayMember({ type: "localeText" })],
             }),
             defineField({
               name: "image",
@@ -145,13 +142,13 @@ export const restaurant = defineType({
           name: "footprint",
           title: "Footprint",
           type: "array",
-          of: [defineArrayMember({ type: "string" })],
+          of: [defineArrayMember({ type: "localeString" })],
           description: "Global footprint stops, in display order.",
         }),
         defineField({
           name: "footprintNow",
           title: "Footprint now",
-          type: "string",
+          type: "localeString",
           description: 'The highlighted closing stop, "Now, Richmond".',
         }),
         defineField({
@@ -162,14 +159,13 @@ export const restaurant = defineType({
             defineField({
               name: "lead",
               title: "Lead",
-              type: "text",
-              rows: 3,
+              type: "localeText",
             }),
             defineField({
               name: "body",
               title: "Body paragraphs",
               type: "array",
-              of: [defineArrayMember({ type: "text", rows: 3 })],
+              of: [defineArrayMember({ type: "localeText" })],
             }),
             defineField({
               name: "image",
@@ -193,14 +189,13 @@ export const restaurant = defineType({
                 defineField({
                   name: "title",
                   title: "Title",
-                  type: "string",
+                  type: "localeString",
                   validation: (rule) => rule.required(),
                 }),
                 defineField({
                   name: "line",
                   title: "Line",
-                  type: "text",
-                  rows: 3,
+                  type: "localeText",
                 }),
                 defineField({
                   name: "image",
@@ -210,7 +205,7 @@ export const restaurant = defineType({
                     "Concept image for this card. Upload JPG or WebP, at least 1200 by 825 pixels (16:11). The frame keeps this ratio at every width.",
                 }),
               ],
-              preview: { select: { title: "title", subtitle: "line" } },
+              preview: { select: { title: "title.en", subtitle: "line.en" } },
             }),
           ],
         }),
@@ -231,8 +226,7 @@ export const restaurant = defineType({
         defineField({
           name: "intro",
           title: "Intro heading",
-          type: "text",
-          rows: 2,
+          type: "localeText",
           description:
             'Heading line. Newlines break lines; asterisks mark the italic span, e.g. "A journey measured\\nin quiet *decades*."',
         }),
@@ -249,40 +243,42 @@ export const restaurant = defineType({
                 defineField({
                   name: "title",
                   title: "Title",
-                  type: "string",
+                  type: "localeString",
+                  description:
+                    "Award titles keep their English forms in both locales (ruling of 2026-08-04) until official Chinese names arrive.",
                   validation: (rule) => rule.required(),
                 }),
                 defineField({
                   name: "detail",
                   title: "Detail",
-                  type: "string",
+                  type: "localeString",
                   description:
                     'e.g. "Four consecutive years", "Individual Supreme Gold Award".',
                 }),
                 defineField({
                   name: "years",
                   title: "Years",
-                  type: "string",
-                  description: 'Ranges written "2022 to 2025", never a dash.',
+                  type: "localeString",
+                  description:
+                    'Ranges written "2022 to 2025" (zh: "2022 至 2025"), never a dash.',
                   validation: (rule) => rule.required(),
                 }),
               ],
-              preview: { select: { title: "title", subtitle: "years" } },
+              preview: { select: { title: "title.en", subtitle: "years.en" } },
             }),
           ],
         }),
-        defineField({ name: "bio", title: "Bio", type: "text", rows: 4 }),
+        defineField({ name: "bio", title: "Bio", type: "localeText" }),
         defineField({
           name: "moments",
           title: "Notable moments",
           type: "array",
-          of: [defineArrayMember({ type: "string" })],
+          of: [defineArrayMember({ type: "localeString" })],
         }),
         defineField({
           name: "quote",
           title: "Quote",
-          type: "text",
-          rows: 3,
+          type: "localeText",
           description: "Placeholder pending the chef interview.",
         }),
       ],
@@ -292,7 +288,7 @@ export const restaurant = defineType({
       title: "Banquet",
       type: "object",
       fields: [
-        defineField({ name: "copy", title: "Copy", type: "text", rows: 4 }),
+        defineField({ name: "copy", title: "Copy", type: "localeText" }),
         defineField({
           name: "facts",
           title: "Facts",
@@ -303,7 +299,7 @@ export const restaurant = defineType({
           name: "occasions",
           title: "Occasions",
           type: "array",
-          of: [defineArrayMember({ type: "string" })],
+          of: [defineArrayMember({ type: "localeString" })],
         }),
         defineField({
           name: "menus",
@@ -318,18 +314,22 @@ export const restaurant = defineType({
                 defineField({
                   name: "label",
                   title: "Label",
-                  type: "string",
+                  type: "localeString",
                   validation: (rule) => rule.required(),
                 }),
-                defineField({ name: "line", title: "Line", type: "string" }),
+                defineField({
+                  name: "line",
+                  title: "Line",
+                  type: "localeString",
+                }),
                 defineField({
                   name: "detail",
                   title: "Detail",
-                  type: "string",
+                  type: "localeString",
                   description: 'e.g. "Pricing on enquiry".',
                 }),
               ],
-              preview: { select: { title: "label", subtitle: "line" } },
+              preview: { select: { title: "label.en", subtitle: "line.en" } },
             }),
           ],
         }),
@@ -374,7 +374,7 @@ export const restaurant = defineType({
           name: "hours",
           title: "Hours",
           type: "array",
-          of: [defineArrayMember({ type: "string" })],
+          of: [defineArrayMember({ type: "localeString" })],
           description: 'Service windows, e.g. "Lunch 11:00 to 14:30".',
         }),
         defineField({
@@ -382,8 +382,19 @@ export const restaurant = defineType({
           title: "Address",
           type: "object",
           fields: [
-            defineField({ name: "name", title: "Name", type: "string" }),
-            defineField({ name: "line", title: "Line", type: "string" }),
+            defineField({
+              name: "name",
+              title: "Name",
+              type: "string",
+              description: "Venue brand name; stays English in both locales.",
+            }),
+            defineField({
+              name: "line",
+              title: "Line",
+              type: "localeString",
+              description:
+                "Keeps its English form in both locales (ruling of 2026-08-04) until an official Chinese address arrives.",
+            }),
           ],
         }),
       ],
@@ -401,7 +412,7 @@ export const restaurant = defineType({
             defineField({
               name: "label",
               title: "Label",
-              type: "string",
+              type: "localeString",
               validation: (rule) => rule.required(),
             }),
             defineField({
@@ -411,7 +422,7 @@ export const restaurant = defineType({
               description: 'Stub "#" until the real profiles land.',
             }),
           ],
-          preview: { select: { title: "label", subtitle: "url" } },
+          preview: { select: { title: "label.en", subtitle: "url" } },
         }),
       ],
     }),

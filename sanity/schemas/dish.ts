@@ -47,7 +47,7 @@ export const dish = defineType({
     defineField({
       name: "line",
       title: "Line",
-      type: "string",
+      type: "localeString",
       description:
         'One line under the name, e.g. "Lacquered skin, carved to order."',
       validation: (rule) => rule.required(),
