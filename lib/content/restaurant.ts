@@ -6,10 +6,11 @@ import type { RestaurantContent } from "./types";
  * (v6); the phone, WeChat handle, hours, address, room count, and footprint
  * list are placeholders confirmed before launch. The zh values are drafted
  * Traditional Chinese in a Hong Kong fine dining register, pending native
- * review; brand names without confirmed official Chinese names (Crystal
- * Jade Palace, GreenTee Richmond Center, hotel groups keep their standard
- * Chinese names) stay English inside zh copy, and English placeholders stay
- * placeholders in zh.
+ * review. By ruling (2026-08-04), four brand items keep their English
+ * forms inside zh copy: the trade name (Crystal Jade Palace), GreenTee
+ * Richmond Center, award titles, and the address line; hotel groups keep
+ * their standard Chinese names. English placeholders stay placeholders in
+ * zh.
  */
 export const restaurant: RestaurantContent = {
   name: "Crystal Jade Palace",
@@ -36,7 +37,7 @@ export const restaurant: RestaurantContent = {
       label: { en: "Michelin", zh: "米芝蓮" },
       value: {
         en: "Vancouver Michelin Star, four consecutive years",
-        zh: "溫哥華米芝蓮星級，連續四年",
+        zh: "Vancouver Michelin Star，連續四年",
       },
       detail: { en: "2022 to 2025", zh: "2022 至 2025" },
     },
@@ -44,11 +45,11 @@ export const restaurant: RestaurantContent = {
       label: { en: "Accolades", zh: "殊榮" },
       value: {
         en: "North America's Best Chinese Cuisine Restaurant, 2025",
-        zh: "2025 年北美最佳中菜餐廳",
+        zh: "North America's Best Chinese Cuisine Restaurant，2025 年",
       },
       detail: {
         en: "Supreme Gold, World Championship of Chinese Cuisine 2024",
-        zh: "2024 年世界中菜烹飪大賽至尊金獎",
+        zh: "Supreme Gold, World Championship of Chinese Cuisine 2024",
       },
     },
     {
@@ -162,7 +163,7 @@ export const restaurant: RestaurantContent = {
       {
         title: {
           en: "Vancouver Michelin Star",
-          zh: "溫哥華米芝蓮星級",
+          zh: "Vancouver Michelin Star",
         },
         detail: { en: "Four consecutive years", zh: "連續四年" },
         years: { en: "2022 to 2025", zh: "2022 至 2025" },
@@ -170,18 +171,18 @@ export const restaurant: RestaurantContent = {
       {
         title: {
           en: "World Championship of Chinese Cuisine",
-          zh: "世界中菜烹飪大賽",
+          zh: "World Championship of Chinese Cuisine",
         },
         detail: {
           en: "Individual Supreme Gold Award",
-          zh: "個人至尊金獎",
+          zh: "Individual Supreme Gold Award",
         },
         years: { en: "2024", zh: "2024" },
       },
       {
         title: {
           en: "North America's Best Chinese Cuisine Restaurant",
-          zh: "北美最佳中菜餐廳",
+          zh: "North America's Best Chinese Cuisine Restaurant",
         },
         years: { en: "2025", zh: "2025" },
       },
@@ -274,7 +275,7 @@ export const restaurant: RestaurantContent = {
       name: "GreenTee Richmond Center",
       line: {
         en: "0000 Garden Way, Richmond",
-        zh: "列治文 Garden Way 0000 號",
+        zh: "0000 Garden Way, Richmond",
       },
     },
   },
