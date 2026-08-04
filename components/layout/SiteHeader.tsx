@@ -12,12 +12,12 @@ import type { NavLink } from "@/types";
 import { MobileMenu } from "./MobileMenu";
 
 /**
- * Sticky top header: mark left, the five page links, the static EN / 中文
- * indicator (the active locale carries champagne; the real toggle is the Z3
- * phase), and the Book a Table CTA right. At 1024px and below the menu
- * collapses to a hamburger opening the full-screen MobileMenu. Active state
- * is route-driven; nav data and strings arrive via props from the layout
- * (props-over-import).
+ * Sticky top header: mark left, the five page links, the EN / 中文 locale
+ * toggle (two links, active locale in champagne with aria-current, targets
+ * preserving the current path across the trees), and the Book a Table CTA
+ * right. At 1024px and below the menu collapses to a hamburger opening the
+ * full-screen MobileMenu. Active state is route-driven; nav data and
+ * strings arrive via props from the layout (props-over-import).
  */
 export function SiteHeader({
   locale,
@@ -35,6 +35,12 @@ export function SiteHeader({
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
+
+  // Locale toggle targets: the same page in the other tree. Computed from
+  // the pathname so deep pages map to their twin (/story to /zh/story).
+  const onZh = pathname === "/zh" || pathname.startsWith("/zh/");
+  const zhHref = onZh ? pathname : pathname === "/" ? "/zh" : `/zh${pathname}`;
+  const enHref = pathname === "/zh" ? "/" : onZh ? pathname.slice(3) : pathname;
 
   // Route change closes the drawer (state adjusted during render, covering
   // back/forward navigation as well as link clicks).
@@ -71,12 +77,35 @@ export function SiteHeader({
           })}
         </nav>
 
-        <p className="text-mist/50 flex cursor-default gap-3 text-[9.5px] leading-none font-medium tracking-[0.16em] max-[1024px]:hidden">
-          <span className={cn(locale === "en" && "text-champagne")}>EN</span>
-          <span className={cn("font-zh", locale === "zh" && "text-champagne")}>
+        <nav
+          aria-label={strings.languageAria}
+          className="flex gap-3 text-[9.5px] leading-none font-medium tracking-[0.16em] max-[1024px]:hidden"
+        >
+          <Link
+            href={enHref}
+            aria-current={locale === "en" ? "page" : undefined}
+            className={cn(
+              "-m-1 p-1 transition-colors",
+              locale === "en"
+                ? "text-champagne"
+                : "text-mist/50 hover:text-ivory",
+            )}
+          >
+            EN
+          </Link>
+          <Link
+            href={zhHref}
+            aria-current={locale === "zh" ? "page" : undefined}
+            className={cn(
+              "font-zh -m-1 p-1 transition-colors",
+              locale === "zh"
+                ? "text-champagne"
+                : "text-mist/50 hover:text-ivory",
+            )}
+          >
             中文
-          </span>
-        </p>
+          </Link>
+        </nav>
 
         <ReservationCta
           target={bookTarget}
@@ -107,6 +136,8 @@ export function SiteHeader({
         pages={pages}
         bookTarget={bookTarget}
         strings={strings}
+        enHref={enHref}
+        zhHref={zhHref}
         onClose={() => setOpen(false)}
         toggleRef={toggleRef}
       />

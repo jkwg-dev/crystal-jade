@@ -54,6 +54,8 @@ export type HeaderStrings = {
   closeMenu: string;
   menuAria: string;
   bookATable: string;
+  /** aria-label on the EN / 中文 locale toggle nav. */
+  languageAria: string;
 };
 
 export type SiteStrings = {
@@ -155,6 +157,7 @@ const en: SiteStrings = {
       closeMenu: "Close menu",
       menuAria: "Menu",
       bookATable: "Book a Table",
+      languageAria: "Language",
     },
     detailsAria: "Crystal Jade Palace details",
     daily: ", daily",
@@ -325,6 +328,7 @@ const zh: SiteStrings = {
       closeMenu: "關閉選單",
       menuAria: "選單",
       bookATable: "訂座",
+      languageAria: "語言",
     },
     detailsAria: "餐廳資訊",
     daily: "，每日供應",

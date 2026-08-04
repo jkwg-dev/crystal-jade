@@ -27,6 +27,8 @@ export function MobileMenu({
   pages,
   bookTarget,
   strings,
+  enHref,
+  zhHref,
   onClose,
   toggleRef,
 }: {
@@ -36,6 +38,9 @@ export function MobileMenu({
   pages: NavLink[];
   bookTarget: ReservationTarget;
   strings: HeaderStrings;
+  /** Locale toggle targets, computed by the header from the pathname. */
+  enHref: string;
+  zhHref: string;
   onClose: () => void;
   toggleRef: RefObject<HTMLButtonElement | null>;
 }) {
@@ -136,12 +141,37 @@ export function MobileMenu({
         <ReservationCta target={bookTarget} onClick={onClose}>
           {strings.bookATable}
         </ReservationCta>
-        <p className="text-mist/50 flex cursor-default gap-3 text-[9.5px] leading-none font-medium tracking-[0.16em]">
-          <span className={cn(locale === "en" && "text-champagne")}>EN</span>
-          <span className={cn("font-zh", locale === "zh" && "text-champagne")}>
+        <nav
+          aria-label={strings.languageAria}
+          className="flex gap-3 text-[9.5px] leading-none font-medium tracking-[0.16em]"
+        >
+          <Link
+            href={enHref}
+            aria-current={locale === "en" ? "page" : undefined}
+            onClick={onClose}
+            className={cn(
+              "-mx-1 flex min-h-11 items-center px-1 transition-colors",
+              locale === "en"
+                ? "text-champagne"
+                : "text-mist/50 hover:text-ivory",
+            )}
+          >
+            EN
+          </Link>
+          <Link
+            href={zhHref}
+            aria-current={locale === "zh" ? "page" : undefined}
+            onClick={onClose}
+            className={cn(
+              "font-zh -mx-1 flex min-h-11 items-center px-1 transition-colors",
+              locale === "zh"
+                ? "text-champagne"
+                : "text-mist/50 hover:text-ivory",
+            )}
+          >
             中文
-          </span>
-        </p>
+          </Link>
+        </nav>
       </div>
     </div>
   );
