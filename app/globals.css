@@ -27,9 +27,11 @@
 
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-serif: var(--font-cormorant), "Didot", Georgia, serif;
+  /* Traditional-first for the zh-Hant site (Z3 ruling, 2026-08-04); the
+     Simplified faces stay as deep fallbacks for systems without TC fonts. */
   --font-zh:
-    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", var(--font-inter),
-    sans-serif;
+    "PingFang TC", "PingFang HK", "Microsoft JhengHei", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", var(--font-inter), sans-serif;
 }
 
 /* ==========================================================================
@@ -592,4 +594,46 @@
       padding: 88px 0;
     }
   }
+}
+
+/* ==========================================================================
+   zh-Hant typography (Z3 rulings, 2026-08-04). Scoped to the /zh tree via
+   html[lang="zh-Hant"] and deliberately unlayered so these win over the
+   utility layer. English pages are untouched.
+   - Display CJK renders through the zh stack appended to the serif token,
+     instead of falling through Didot / Georgia to browser defaults.
+   - em spans keep their champagne color but drop the synthetic italic
+     slant, which CJK glyphs fake poorly.
+   - The wide uppercase label tracking halves per value (Latin brand lockup
+     at 0.44em / 0.5em and the 0.12em zhName stay untouched).
+   ========================================================================== */
+html[lang="zh-Hant"] {
+  --font-serif: var(--font-cormorant), "Didot", Georgia, var(--font-zh);
+}
+html[lang="zh-Hant"] em {
+  font-style: normal;
+}
+html[lang="zh-Hant"] [class*="tracking-[0.16em]"] {
+  letter-spacing: 0.08em;
+}
+html[lang="zh-Hant"] [class*="tracking-[0.22em]"] {
+  letter-spacing: 0.11em;
+}
+html[lang="zh-Hant"] [class*="tracking-[0.24em]"] {
+  letter-spacing: 0.12em;
+}
+html[lang="zh-Hant"] [class*="tracking-[0.26em]"] {
+  letter-spacing: 0.13em;
+}
+html[lang="zh-Hant"] [class*="tracking-[0.28em]"] {
+  letter-spacing: 0.14em;
+}
+html[lang="zh-Hant"] [class*="tracking-[0.3em]"] {
+  letter-spacing: 0.15em;
+}
+html[lang="zh-Hant"] [class*="tracking-[0.34em]"] {
+  letter-spacing: 0.17em;
+}
+html[lang="zh-Hant"] [class*="tracking-[0.4em]"] {
+  letter-spacing: 0.2em;
 }
