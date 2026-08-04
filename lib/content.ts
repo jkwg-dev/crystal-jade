@@ -164,17 +164,20 @@ type SanityImage = {
   } | null;
 };
 
+/** The `{ en, zh }` locale objects (localeString / localeText documents). */
+type SanityLocaleValue = { en?: string | null; zh?: string | null };
+
 type SanityFactRow = {
-  label?: string | null;
-  value?: string | null;
-  detail?: string | null;
+  label?: SanityLocaleValue | null;
+  value?: SanityLocaleValue | null;
+  detail?: SanityLocaleValue | null;
 };
 
 type SanityDish = {
   id?: string | null;
   name?: string | null;
   zhName?: string | null;
-  line?: string | null;
+  line?: SanityLocaleValue | null;
   category?: string | null;
   order?: number | null;
   image?: SanityImage | null;
@@ -184,16 +187,19 @@ type SanityDish = {
 };
 
 type SanityLeadBody = {
-  lead?: string | null;
-  body?: string[] | null;
+  lead?: SanityLocaleValue | null;
+  body?: SanityLocaleValue[] | null;
   image?: SanityImage | null;
 };
 
 type SanityRestaurant = {
   name?: string | null;
-  tagline?: string | null;
-  lede?: string | null;
-  intro?: { lede?: string | null; support?: string | null } | null;
+  tagline?: SanityLocaleValue | null;
+  lede?: SanityLocaleValue | null;
+  intro?: {
+    lede?: SanityLocaleValue | null;
+    support?: SanityLocaleValue | null;
+  } | null;
   heroMedia?: SanityImage | null;
   bands?: {
     story?: SanityImage | null;
@@ -202,41 +208,41 @@ type SanityRestaurant = {
   } | null;
   credentials?: SanityFactRow[] | null;
   privateDining?: {
-    copy?: string | null;
+    copy?: SanityLocaleValue | null;
     facts?: SanityFactRow[] | null;
     image?: SanityImage | null;
   } | null;
   story?: {
     heritage?: SanityLeadBody | null;
-    footprint?: string[] | null;
-    footprintNow?: string | null;
+    footprint?: SanityLocaleValue[] | null;
+    footprintNow?: SanityLocaleValue | null;
     richmond?: SanityLeadBody | null;
     philosophy?: {
-      title?: string | null;
-      line?: string | null;
+      title?: SanityLocaleValue | null;
+      line?: SanityLocaleValue | null;
       image?: SanityImage | null;
     }[] | null;
   } | null;
   chef?: {
     portrait?: SanityImage | null;
-    intro?: string | null;
+    intro?: SanityLocaleValue | null;
     awards?: {
-      title?: string | null;
-      detail?: string | null;
-      years?: string | null;
+      title?: SanityLocaleValue | null;
+      detail?: SanityLocaleValue | null;
+      years?: SanityLocaleValue | null;
     }[] | null;
-    bio?: string | null;
-    moments?: string[] | null;
-    quote?: string | null;
+    bio?: SanityLocaleValue | null;
+    moments?: SanityLocaleValue[] | null;
+    quote?: SanityLocaleValue | null;
   } | null;
   banquet?: {
-    copy?: string | null;
+    copy?: SanityLocaleValue | null;
     facts?: SanityFactRow[] | null;
-    occasions?: string[] | null;
+    occasions?: SanityLocaleValue[] | null;
     menus?: {
-      label?: string | null;
-      line?: string | null;
-      detail?: string | null;
+      label?: SanityLocaleValue | null;
+      line?: SanityLocaleValue | null;
+      detail?: SanityLocaleValue | null;
     }[] | null;
     enquiryTarget?: string | null;
     tableImage?: SanityImage | null;
@@ -246,10 +252,16 @@ type SanityRestaurant = {
     openTableUrl?: string | null;
     phone?: string | null;
     wechat?: string | null;
-    hours?: string[] | null;
-    address?: { name?: string | null; line?: string | null } | null;
+    hours?: SanityLocaleValue[] | null;
+    address?: {
+      name?: string | null;
+      line?: SanityLocaleValue | null;
+    } | null;
   } | null;
-  socials?: { label?: string | null; url?: string | null }[] | null;
+  socials?: {
+    label?: SanityLocaleValue | null;
+    url?: string | null;
+  }[] | null;
 };
 
 /** Required-field guard: a missing essential aborts the mapping, and the
@@ -259,6 +271,36 @@ function req<T>(value: T | null | undefined, label: string): T {
     throw new Error(`missing ${label}`);
   }
   return value;
+}
+
+/**
+ * Resolve a required locale object per locale. The en value is essential
+ * (missing en aborts to the config fallback via `req`); a missing zh
+ * resolves to the document's en value with the same logged `[content]`
+ * line as the config resolver's `pick`.
+ */
+function locValue(
+  value: SanityLocaleValue | null | undefined,
+  locale: Locale,
+  label: string,
+): string {
+  const section = req(value, label);
+  if (locale === "zh") {
+    if (section.zh !== null && section.zh !== undefined) return section.zh;
+    console.error(`[content] missing zh for ${label}; serving the en value.`);
+  }
+  return req(section.en, `${label}.en`);
+}
+
+/** Optional locale object: absent stays absent, present resolves. */
+function locOptional(
+  value: SanityLocaleValue | null | undefined,
+  locale: Locale,
+  label: string,
+): string | undefined {
+  return value === null || value === undefined
+    ? undefined
+    : locValue(value, locale, label);
 }
 
 function isDishCategory(value: string): value is DishCategory {
@@ -309,15 +351,19 @@ function mapImage(
   };
 }
 
-function mapFactRows(rows: SanityFactRow[] | null | undefined, label: string) {
+function mapFactRows(
+  rows: SanityFactRow[] | null | undefined,
+  locale: Locale,
+  label: string,
+) {
   return req(rows, label).map((row, index) => ({
-    label: req(row.label, `${label}[${index}].label`),
-    value: req(row.value, `${label}[${index}].value`),
-    detail: row.detail ?? undefined,
+    label: locValue(row.label, locale, `${label}[${index}].label`),
+    value: locValue(row.value, locale, `${label}[${index}].value`),
+    detail: locOptional(row.detail, locale, `${label}[${index}].detail`),
   }));
 }
 
-function mapDish(raw: SanityDish): Dish {
+function mapDish(raw: SanityDish, locale: Locale): Dish {
   const id = req(raw.id, "dish slug");
   const category = req(raw.category, `dish ${id} category`);
   if (!isDishCategory(category)) {
@@ -331,7 +377,7 @@ function mapDish(raw: SanityDish): Dish {
     id,
     name: req(raw.name, `dish ${id} name`),
     zhName: req(raw.zhName, `dish ${id} zhName`),
-    line: req(raw.line, `dish ${id} line`),
+    line: locValue(raw.line, locale, `dish ${id} line`),
     category,
     order: req(raw.order, `dish ${id} order`),
     image: mapImage(raw.image, IMAGE_WIDTH.portrait),
@@ -343,18 +389,21 @@ function mapDish(raw: SanityDish): Dish {
 
 function mapLeadBody(
   raw: SanityLeadBody | null | undefined,
+  locale: Locale,
   label: string,
   imageWidth: number,
 ) {
   const section = req(raw, label);
   return {
-    lead: req(section.lead, `${label}.lead`),
-    body: req(section.body, `${label}.body`),
+    lead: locValue(section.lead, locale, `${label}.lead`),
+    body: req(section.body, `${label}.body`).map((paragraph, index) =>
+      locValue(paragraph, locale, `${label}.body[${index}]`),
+    ),
     image: mapImage(section.image, imageWidth),
   };
 }
 
-function mapRestaurant(raw: SanityRestaurant): Restaurant {
+function mapRestaurant(raw: SanityRestaurant, locale: Locale): Restaurant {
   const intro = req(raw.intro, "intro");
   const privateDining = req(raw.privateDining, "privateDining");
   const story = req(raw.story, "story");
@@ -364,11 +413,11 @@ function mapRestaurant(raw: SanityRestaurant): Restaurant {
   const address = req(reserve.address, "reserve.address");
   return {
     name: req(raw.name, "name"),
-    tagline: req(raw.tagline, "tagline"),
-    lede: req(raw.lede, "lede"),
+    tagline: locValue(raw.tagline, locale, "tagline"),
+    lede: locValue(raw.lede, locale, "lede"),
     intro: {
-      lede: req(intro.lede, "intro.lede"),
-      support: req(intro.support, "intro.support"),
+      lede: locValue(intro.lede, locale, "intro.lede"),
+      support: locValue(intro.support, locale, "intro.support"),
     },
     heroMedia: mapImage(raw.heroMedia, IMAGE_WIDTH.hero),
     bands: raw.bands
@@ -378,51 +427,75 @@ function mapRestaurant(raw: SanityRestaurant): Restaurant {
           banquet: mapImage(raw.bands.banquet, IMAGE_WIDTH.hero),
         }
       : undefined,
-    credentials: mapFactRows(raw.credentials, "credentials"),
+    credentials: mapFactRows(raw.credentials, locale, "credentials"),
     privateDining: {
-      copy: req(privateDining.copy, "privateDining.copy"),
-      facts: mapFactRows(privateDining.facts, "privateDining.facts"),
+      copy: locValue(privateDining.copy, locale, "privateDining.copy"),
+      facts: mapFactRows(privateDining.facts, locale, "privateDining.facts"),
       image: mapImage(privateDining.image, IMAGE_WIDTH.card),
     },
     story: {
-      heritage: mapLeadBody(story.heritage, "story.heritage", IMAGE_WIDTH.card),
-      footprint: req(story.footprint, "story.footprint"),
-      footprintNow: req(story.footprintNow, "story.footprintNow"),
+      heritage: mapLeadBody(
+        story.heritage,
+        locale,
+        "story.heritage",
+        IMAGE_WIDTH.card,
+      ),
+      footprint: req(story.footprint, "story.footprint").map((stop, index) =>
+        locValue(stop, locale, `story.footprint[${index}]`),
+      ),
+      footprintNow: locValue(story.footprintNow, locale, "story.footprintNow"),
       richmond: mapLeadBody(
         story.richmond,
+        locale,
         "story.richmond",
         IMAGE_WIDTH.portrait,
       ),
       philosophy: req(story.philosophy, "story.philosophy").map(
         (card, index) => ({
-          title: req(card.title, `philosophy[${index}].title`),
-          line: req(card.line, `philosophy[${index}].line`),
+          title: locValue(card.title, locale, `philosophy[${index}].title`),
+          line: locValue(card.line, locale, `philosophy[${index}].line`),
           image: mapImage(card.image, IMAGE_WIDTH.card),
         }),
       ),
     },
     chef: {
       portrait: mapImage(chef.portrait, IMAGE_WIDTH.portrait),
-      intro: req(chef.intro, "chef.intro"),
+      intro: locValue(chef.intro, locale, "chef.intro"),
       awards: req(chef.awards, "chef.awards").map((award, index) => ({
-        title: req(award.title, `chef.awards[${index}].title`),
-        detail: award.detail ?? undefined,
-        years: req(award.years, `chef.awards[${index}].years`),
+        title: locValue(award.title, locale, `chef.awards[${index}].title`),
+        detail: locOptional(
+          award.detail,
+          locale,
+          `chef.awards[${index}].detail`,
+        ),
+        years: locValue(award.years, locale, `chef.awards[${index}].years`),
       })),
-      bio: req(chef.bio, "chef.bio"),
-      moments: req(chef.moments, "chef.moments"),
-      quote: req(chef.quote, "chef.quote"),
+      bio: locValue(chef.bio, locale, "chef.bio"),
+      moments: req(chef.moments, "chef.moments").map((moment, index) =>
+        locValue(moment, locale, `chef.moments[${index}]`),
+      ),
+      quote: locValue(chef.quote, locale, "chef.quote"),
     },
     banquet: {
-      copy: req(banquet.copy, "banquet.copy"),
-      facts: mapFactRows(banquet.facts, "banquet.facts"),
-      occasions: req(banquet.occasions, "banquet.occasions"),
+      copy: locValue(banquet.copy, locale, "banquet.copy"),
+      facts: mapFactRows(banquet.facts, locale, "banquet.facts"),
+      occasions: req(banquet.occasions, "banquet.occasions").map(
+        (occasion, index) =>
+          locValue(occasion, locale, `banquet.occasions[${index}]`),
+      ),
       menus: req(banquet.menus, "banquet.menus").map((menu, index) => ({
-        label: req(menu.label, `banquet.menus[${index}].label`),
-        line: req(menu.line, `banquet.menus[${index}].line`),
-        detail: menu.detail ?? undefined,
+        label: locValue(menu.label, locale, `banquet.menus[${index}].label`),
+        line: locValue(menu.line, locale, `banquet.menus[${index}].line`),
+        detail: locOptional(
+          menu.detail,
+          locale,
+          `banquet.menus[${index}].detail`,
+        ),
       })),
-      enquiryTarget: req(banquet.enquiryTarget, "banquet.enquiryTarget"),
+      enquiryTarget: localePath(
+        locale,
+        req(banquet.enquiryTarget, "banquet.enquiryTarget"),
+      ),
       tableImage: mapImage(banquet.tableImage, IMAGE_WIDTH.portrait),
       courseImage: mapImage(banquet.courseImage, IMAGE_WIDTH.card),
     },
@@ -430,14 +503,16 @@ function mapRestaurant(raw: SanityRestaurant): Restaurant {
       openTableUrl: reserve.openTableUrl ?? undefined,
       phone: req(reserve.phone, "reserve.phone"),
       wechat: req(reserve.wechat, "reserve.wechat"),
-      hours: req(reserve.hours, "reserve.hours"),
+      hours: req(reserve.hours, "reserve.hours").map((window, index) =>
+        locValue(window, locale, `reserve.hours[${index}]`),
+      ),
       address: {
         name: req(address.name, "reserve.address.name"),
-        line: req(address.line, "reserve.address.line"),
+        line: locValue(address.line, locale, "reserve.address.line"),
       },
     },
     socials: req(raw.socials, "socials").map((social, index) => ({
-      label: req(social.label, `socials[${index}].label`),
+      label: locValue(social.label, locale, `socials[${index}].label`),
       url: req(social.url, `socials[${index}].url`),
     })),
   };
@@ -481,46 +556,42 @@ async function fromSanity<T>(
 /* ------------------------------------------------------------------ */
 
 /*
- * Z1 interim locale switch: the dataset carries English only until the Z2
- * schema localization lands, so the zh locale serves the typed config
- * wholesale, even when Sanity is configured. The switch stays binary per
- * request and per locale; the two sources never merge. Z2 replaces the
- * early zh return with locale-aware queries and per-field en fallback.
+ * Both locales fetch through the same GROQ query (so the 60 second fetch
+ * cache is shared between the trees) and the mapper resolves the locale
+ * objects per request. The binary Sanity-or-config switch is per locale:
+ * a failed or empty fetch, or a document a locale cannot map, serves that
+ * locale's typed-config resolution wholesale. The sources never merge.
  */
 
 /** The restaurant singleton: copy, credentials, story, chef, banquet, reserve. */
 export async function getRestaurant(locale: Locale): Promise<Restaurant> {
-  if (locale === "zh") return localizeRestaurant(configRestaurant, "zh");
   return fromSanity(
-    "restaurant",
+    `restaurant (${locale})`,
     async (activeClient) => {
       const raw = await activeClient.fetch<SanityRestaurant | null>(
         RESTAURANT_QUERY,
         {},
         FETCH_OPTIONS,
       );
-      return raw ? mapRestaurant(raw) : null;
+      return raw ? mapRestaurant(raw, locale) : null;
     },
-    localizeRestaurant(configRestaurant, "en"),
+    localizeRestaurant(configRestaurant, locale),
   );
 }
 
 /** All menu dishes, in menu order; the grid also sorts by `order`. */
 export async function getDishes(locale: Locale): Promise<Dish[]> {
-  if (locale === "zh") {
-    return configDishes.map((dish) => localizeDish(dish, "zh"));
-  }
   return fromSanity(
-    "dishes",
+    `dishes (${locale})`,
     async (activeClient) => {
       const raw = await activeClient.fetch<SanityDish[] | null>(
         DISHES_QUERY,
         {},
         FETCH_OPTIONS,
       );
-      return raw?.map(mapDish);
+      return raw?.map((dish) => mapDish(dish, locale));
     },
-    configDishes.map((dish) => localizeDish(dish, "en")),
+    configDishes.map((dish) => localizeDish(dish, locale)),
   );
 }
 
@@ -531,19 +602,16 @@ export async function getDishes(locale: Locale): Promise<Dish[]> {
  * precedence ruling the active source wins wholesale.
  */
 export async function getSignatureDishes(locale: Locale): Promise<Dish[]> {
-  if (locale === "zh") {
-    return configSignatureDishes.map((dish) => localizeDish(dish, "zh"));
-  }
   return fromSanity(
-    "signature dishes",
+    `signature dishes (${locale})`,
     async (activeClient) => {
       const raw = await activeClient.fetch<SanityDish[] | null>(
         SIGNATURE_QUERY,
         {},
         FETCH_OPTIONS,
       );
-      return raw?.map(mapDish);
+      return raw?.map((dish) => mapDish(dish, locale));
     },
-    configSignatureDishes.map((dish) => localizeDish(dish, "en")),
+    configSignatureDishes.map((dish) => localizeDish(dish, locale)),
   );
 }
