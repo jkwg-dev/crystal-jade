@@ -5,8 +5,8 @@ Crystal Jade Palace, the Cantonese fine dining restaurant at GreenTee Richmond
 Center. Split out of the GreenTee site to live on its own domain, its own
 Vercel project, and its own Sanity project (never the GreenTee one). English
 lives at the root routes; Traditional Chinese lives under `/zh` (see
-Localization). The header EN / 中文 indicator stays inert until the Z3
-toggle phase lands.
+Localization). The header EN / 中文 switch is a real locale toggle,
+path-preserving across the two trees.
 
 Routes: `/` (landing), `/story`, `/chef`, `/menu`, `/banquet`, `/reserve`.
 These map one-to-one to the former GreenTee `/dining` and `/dining/*` pages.
@@ -112,8 +112,9 @@ CMS type.
   client leaves receive resolved strings as props and never import the
   dictionary or the accessor (props-over-import).
 - zh-Hant copy is drafted in a Hong Kong fine dining register (米芝蓮,
-  never 米其林) and is pending native review; every drafted string will be
-  tracked in `docs/zh-review.md` when Z3 lands. Brand and place names
+  never 米其林) and is pending native review; every drafted string is
+  tracked in `docs/zh-review.md`, one document for the native reviewer,
+  kept current when strings change. Brand and place names
   without a confirmed official Chinese name (Crystal Jade Palace, GreenTee
   Richmond Center) stay in English inside zh copy: never invent a Chinese
   trade name. English placeholder copy stays placeholder in zh.
@@ -133,7 +134,19 @@ CMS type.
   ranges written "2022 至 2025" in zh. Chinese prose uses full-width
   punctuation.
 - Typography adjustments for CJK (font stacks, italics, tracking) happen
-  only by checkpoint ruling, never silently.
+  only by checkpoint ruling, never silently. Ruled 2026-08-04: the
+  `--font-zh` stack is Traditional-first (PingFang TC and HK, Microsoft
+  JhengHei, then the SC fallbacks); under the zh root only, `--font-serif`
+  appends the zh stack so display CJK renders deliberately instead of
+  through browser fallback, em spans keep champagne but drop the synthetic
+  italic slant, and wide label tracking is halved (the 0.16em through
+  0.4em utilities map to half their value). The Latin brand lockup
+  (0.44em / 0.5em) and `zhName` (already 0.12em) are exempt. Every rule
+  scopes to `html[lang="zh-Hant"]`; English pages are untouched.
+- The header EN / 中文 switch is a real toggle in the desktop header and
+  the mobile menu footer row: two links, the active locale marked with
+  `aria-current`, targets preserving the current path across the trees
+  (`/story` to `/zh/story` and back), fully keyboard operable.
 
 ## Reservations: OpenTable later
 
